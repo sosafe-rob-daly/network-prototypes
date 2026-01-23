@@ -410,7 +410,7 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
                 {/* Outer glow ring */}
                 {isAnimated && (
                   <div
-                    className="absolute inset-0 rounded-full animate-pulse"
+                    className="absolute inset-0 rounded-full"
                     style={{
                       width: size * 3,
                       height: size * 3,
