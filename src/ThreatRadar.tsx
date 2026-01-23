@@ -279,49 +279,123 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
       </div>
 
       {activeTab === 'network' ? (
-        <div className="relative h-64 bg-gradient-to-br from-red-50/40 via-yellow-50/30 to-green-50/40 rounded-xl overflow-hidden shadow-inner">
-          {/* Legend */}
-          <div className="absolute top-3 right-3 flex items-center gap-4 text-xs bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg">
+        <div className="relative h-64 rounded-xl overflow-hidden shadow-inner">
+          {/* Mesh gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-red-50/30 via-yellow-50/20 to-green-50/30" />
+          <div className="absolute inset-0 opacity-40" style={{
+            backgroundImage: `
+              radial-gradient(at 20% 30%, rgba(239, 68, 68, 0.15) 0px, transparent 50%),
+              radial-gradient(at 80% 70%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+              radial-gradient(at 50% 50%, rgba(251, 191, 36, 0.1) 0px, transparent 50%)
+            `
+          }} />
+
+          {/* Glassmorphism Legend */}
+          <div className="absolute top-3 right-3 flex items-center gap-4 text-xs bg-white/70 backdrop-blur-md px-3 py-2 rounded-lg border border-white/40 shadow-lg shadow-gray-200/50">
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm" />
-              <span className="text-gray-600">Threat Source</span>
+              <span className="text-gray-700 font-medium">Threat Source</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 shadow-sm" />
-              <span className="text-gray-600">Propagating</span>
+              <span className="text-gray-700 font-medium">Propagating</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-sm" />
-              <span className="text-gray-600">Protected</span>
+              <span className="text-gray-700 font-medium">Protected</span>
             </div>
           </div>
 
-          {/* Connection lines */}
+          {/* SVG with gradients and connections */}
           <svg className="absolute inset-0 w-full h-full">
+            <defs>
+              {/* Gradient definitions for connection lines */}
+              {networkNodes.slice(1).map((node) => {
+                const source = networkNodes[0];
+                return (
+                  <linearGradient
+                    key={`gradient-${node.id}`}
+                    id={`line-gradient-${node.id}`}
+                    x1={`${source.x}%`}
+                    y1={`${source.y}%`}
+                    x2={`${node.x}%`}
+                    y2={`${node.y}%`}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0%" stopColor="#ef4444" />
+                    <stop offset="50%" stopColor="#fbbf24" />
+                    <stop offset="100%" stopColor="#10b981" />
+                  </linearGradient>
+                );
+              })}
+            </defs>
+
+            {/* Connection lines with gradients */}
             {networkNodes.slice(1).map((node) => {
               const source = networkNodes[0];
               const isAnimated = animatedNodes.includes(node.id);
               return (
-                <line
-                  key={`line-${node.id}`}
-                  x1={`${source.x}%`}
-                  y1={`${source.y}%`}
-                  x2={`${node.x}%`}
-                  y2={`${node.y}%`}
-                  stroke={isAnimated ? '#10b981' : '#e5e7eb'}
-                  strokeWidth="2"
-                  strokeDasharray={isAnimated ? "0" : "4"}
-                  className="transition-all duration-500"
-                  opacity={isAnimated ? "0.8" : "0.3"}
-                />
+                <g key={`connection-${node.id}`}>
+                  {/* Glow layer */}
+                  {isAnimated && (
+                    <line
+                      x1={`${source.x}%`}
+                      y1={`${source.y}%`}
+                      x2={`${node.x}%`}
+                      y2={`${node.y}%`}
+                      stroke={`url(#line-gradient-${node.id})`}
+                      strokeWidth="6"
+                      opacity="0.3"
+                      className="transition-all duration-500"
+                      style={{ filter: 'blur(4px)' }}
+                    />
+                  )}
+                  {/* Main line */}
+                  <line
+                    x1={`${source.x}%`}
+                    y1={`${source.y}%`}
+                    x2={`${node.x}%`}
+                    y2={`${node.y}%`}
+                    stroke={isAnimated ? `url(#line-gradient-${node.id})` : '#e5e7eb'}
+                    strokeWidth="2"
+                    strokeDasharray={isAnimated ? "0" : "4"}
+                    className="transition-all duration-500"
+                    opacity={isAnimated ? "0.9" : "0.3"}
+                  />
+                  {/* Animated particle */}
+                  {isAnimated && activeThreat?.status === 'propagating' && (
+                    <circle
+                      r="3"
+                      fill="url(#particle-gradient)"
+                      className="opacity-90"
+                    >
+                      <animateMotion
+                        dur="2s"
+                        repeatCount="indefinite"
+                        path={`M ${source.x} ${source.y} L ${node.x} ${node.y}`}
+                      />
+                    </circle>
+                  )}
+                </g>
               );
             })}
+
+            {/* Gradient for particles */}
+            <defs>
+              <radialGradient id="particle-gradient">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                <stop offset="50%" stopColor="#fbbf24" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.6" />
+              </radialGradient>
+            </defs>
           </svg>
 
-          {/* Nodes */}
+          {/* Nodes with enhanced depth */}
           {networkNodes.map((node) => {
             const size = getNodeSize(node.size);
             const isAnimated = animatedNodes.includes(node.id);
+            const nodeColor = getNodeColor(node);
+
             return (
               <div
                 key={node.id}
@@ -333,21 +407,46 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
                   top: `${node.y}%`,
                 }}
               >
+                {/* Outer glow ring */}
+                {isAnimated && (
+                  <div
+                    className="absolute inset-0 rounded-full animate-pulse"
+                    style={{
+                      width: size * 3,
+                      height: size * 3,
+                      left: '50%',
+                      top: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      background: `radial-gradient(circle, ${nodeColor}40 0%, transparent 70%)`,
+                    }}
+                  />
+                )}
+
+                {/* Main node */}
                 <div
-                  className={`rounded-full transition-all duration-300 ${
+                  className={`rounded-full transition-all duration-300 relative ${
                     node.id === 1 ? 'animate-pulse' : ''
                   }`}
                   style={{
                     width: size * 2,
                     height: size * 2,
-                    backgroundColor: getNodeColor(node),
+                    backgroundColor: nodeColor,
                     boxShadow: node.id === 1
-                      ? '0 0 30px rgba(239, 68, 68, 0.6), 0 0 60px rgba(239, 68, 68, 0.3)'
+                      ? '0 0 30px rgba(239, 68, 68, 0.7), 0 0 60px rgba(239, 68, 68, 0.4), 0 4px 12px rgba(239, 68, 68, 0.3)'
                       : isAnimated
-                      ? '0 0 15px rgba(16, 185, 129, 0.4)'
+                      ? `0 0 20px ${nodeColor}60, 0 0 40px ${nodeColor}30, 0 4px 12px ${nodeColor}20`
                       : 'none',
                   }}
-                />
+                >
+                  {/* Inner highlight for depth */}
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)',
+                    }}
+                  />
+                </div>
+
                 {node.label && (
                   <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-bold text-red-600 whitespace-nowrap drop-shadow-sm">
                     {node.label}
@@ -357,23 +456,29 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
             );
           })}
 
-          {/* Propagation pulse effect */}
+          {/* Enhanced propagation pulse effect */}
           {activeThreat?.status === 'propagating' && (
             <>
+              {/* First wave - red to yellow */}
               <div
-                className="absolute w-32 h-32 rounded-full border-2 border-red-400 opacity-0 animate-ping"
+                className="absolute w-32 h-32 rounded-full opacity-0 animate-ping"
                 style={{
                   left: `${networkNodes[0].x}%`,
                   top: `${networkNodes[0].y}%`,
                   transform: 'translate(-50%, -50%)',
+                  background: 'radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, rgba(251, 191, 36, 0.2) 50%, transparent 70%)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
                 }}
               />
+              {/* Second wave - yellow to green */}
               <div
-                className="absolute w-48 h-48 rounded-full border-2 border-yellow-400 opacity-0 animate-ping"
+                className="absolute w-48 h-48 rounded-full opacity-0 animate-ping"
                 style={{
                   left: `${networkNodes[0].x}%`,
                   top: `${networkNodes[0].y}%`,
                   transform: 'translate(-50%, -50%)',
+                  background: 'radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 70%)',
+                  border: '1px solid rgba(251, 191, 36, 0.2)',
                   animationDelay: '0.5s',
                 }}
               />
