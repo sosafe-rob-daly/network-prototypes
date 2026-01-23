@@ -279,7 +279,7 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
       </div>
 
       {activeTab === 'network' ? (
-        <div className="relative h-64 rounded-xl overflow-hidden shadow-inner">
+        <div className="relative h-64 rounded-xl overflow-hidden">
           {/* Mesh gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-red-50/30 via-yellow-50/20 to-green-50/30" />
           <div className="absolute inset-0 opacity-40" style={{
@@ -456,34 +456,6 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
             );
           })}
 
-          {/* Enhanced propagation pulse effect */}
-          {activeThreat?.status === 'propagating' && (
-            <>
-              {/* First wave - red to yellow */}
-              <div
-                className="absolute w-32 h-32 rounded-full opacity-0 animate-ping"
-                style={{
-                  left: `${networkNodes[0].x}%`,
-                  top: `${networkNodes[0].y}%`,
-                  transform: 'translate(-50%, -50%)',
-                  background: 'radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, rgba(251, 191, 36, 0.2) 50%, transparent 70%)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                }}
-              />
-              {/* Second wave - yellow to green */}
-              <div
-                className="absolute w-48 h-48 rounded-full opacity-0 animate-ping"
-                style={{
-                  left: `${networkNodes[0].x}%`,
-                  top: `${networkNodes[0].y}%`,
-                  transform: 'translate(-50%, -50%)',
-                  background: 'radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 70%)',
-                  border: '1px solid rgba(251, 191, 36, 0.2)',
-                  animationDelay: '0.5s',
-                }}
-              />
-            </>
-          )}
         </div>
       ) : (
         <div className="h-64">
