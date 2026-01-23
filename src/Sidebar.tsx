@@ -129,11 +129,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage = 'threat-radar', onNaviga
         </div>
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
           <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
-            J
+            D
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-gray-900">Jinan Budge</div>
-            <div className="text-xs text-gray-500 truncate">jinan.budge@forrester.com</div>
+            <div className="text-sm font-medium text-gray-900">Dr. Backend</div>
+            <div className="text-xs text-gray-500 truncate">dr.backend@sosafe.de</div>
           </div>
           <ChevronDown size={16} className="text-gray-400" />
         </div>
