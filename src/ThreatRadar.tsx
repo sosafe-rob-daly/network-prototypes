@@ -362,32 +362,9 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
                     className="transition-all duration-500"
                     opacity={isAnimated ? "0.9" : "0.3"}
                   />
-                  {/* Animated particle */}
-                  {isAnimated && activeThreat?.status === 'propagating' && (
-                    <circle
-                      r="3"
-                      fill="url(#particle-gradient)"
-                      className="opacity-90"
-                    >
-                      <animateMotion
-                        dur="2s"
-                        repeatCount="indefinite"
-                        path={`M ${source.x} ${source.y} L ${node.x} ${node.y}`}
-                      />
-                    </circle>
-                  )}
                 </g>
               );
             })}
-
-            {/* Gradient for particles */}
-            <defs>
-              <radialGradient id="particle-gradient">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-                <stop offset="50%" stopColor="#fbbf24" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.6" />
-              </radialGradient>
-            </defs>
           </svg>
 
           {/* Nodes with enhanced depth */}
@@ -424,9 +401,7 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
 
                 {/* Main node */}
                 <div
-                  className={`rounded-full transition-all duration-300 relative ${
-                    node.id === 1 ? 'animate-pulse' : ''
-                  }`}
+                  className="rounded-full transition-all duration-300 relative"
                   style={{
                     width: size * 2,
                     height: size * 2,
