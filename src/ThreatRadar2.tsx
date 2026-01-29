@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, Clock, CheckCircle, ArrowRight, Radio, Zap, LucideIcon } from 'lucide-react';
+import { CheckCircle, ArrowRight } from 'lucide-react';
 import ReactECharts from 'echarts-for-react';
 import Sidebar from './Sidebar';
 
