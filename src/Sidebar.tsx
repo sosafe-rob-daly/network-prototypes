@@ -62,6 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage = 'threat-radar', onNaviga
       icon: Network,
       children: [
         { label: 'Threat Radar', path: 'threat-radar', active: activePage === 'threat-radar' },
+        { label: 'Threat Radar 2', path: 'threat-radar-2', active: activePage === 'threat-radar-2' },
         { label: 'Interventions', path: 'interventions', active: activePage === 'interventions' },
         { label: 'Early Warning', path: 'early-warning', active: activePage === 'early-warning' }
       ]
