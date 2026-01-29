@@ -260,15 +260,11 @@ const ProfileCard: React.FC<{ profile: OrgProfile }> = ({ profile }) => {
   );
 };
 
-interface InterventionsProps {
-  onNavigate?: (page: string) => void;
-}
-
-export default function Interventions({ onNavigate }: InterventionsProps) {
+export default function Interventions() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
-      <Sidebar activePage="interventions" onNavigate={onNavigate} />
+      <Sidebar />
 
       <div className="flex-1 flex flex-col">
         {/* Header */}

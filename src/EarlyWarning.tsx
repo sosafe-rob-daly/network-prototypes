@@ -429,11 +429,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   );
 };
 
-interface EarlyWarningProps {
-  onNavigate?: (page: string) => void;
-}
-
-export default function EarlyWarning({ onNavigate }: EarlyWarningProps) {
+export default function EarlyWarning() {
   const [selectedCohort, setSelectedCohort] = useState<RiskCohort | null>(cohorts[0]);
 
   const criticalCount = cohorts.filter(c => c.riskLevel === 'critical').length;
@@ -441,7 +437,7 @@ export default function EarlyWarning({ onNavigate }: EarlyWarningProps) {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
-      <Sidebar activePage="early-warning" onNavigate={onNavigate} />
+      <Sidebar />
 
       <div className="flex-1 flex flex-col">
         {/* Header */}

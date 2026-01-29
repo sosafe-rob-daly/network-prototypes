@@ -517,11 +517,7 @@ const TimelineEvent: React.FC<TimelineEventProps & { color?: string }> = ({ time
   </div>
 );
 
-interface ThreatRadarProps {
-  onNavigate?: (page: string) => void;
-}
-
-export default function ThreatRadar({ onNavigate }: ThreatRadarProps) {
+export default function ThreatRadar() {
   const [activeThreat, setActiveThreat] = useState<Threat | null>(initialThreats[0]);
   const [protectedCount, setProtectedCount] = useState<number>(8431);
 
@@ -537,7 +533,7 @@ export default function ThreatRadar({ onNavigate }: ThreatRadarProps) {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
-      <Sidebar activePage="threat-radar" onNavigate={onNavigate} />
+      <Sidebar />
 
       <div className="flex-1 flex flex-col">
         {/* Header */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CheckSquare,
   LayoutDashboard,
@@ -20,16 +21,15 @@ import soSafeLogo from './assets/sosafe-logo.png';
 interface NavItem {
   label: string;
   icon: React.ElementType;
-  children?: { label: string; active?: boolean; path?: string }[];
+  children?: { label: string; path?: string }[];
   expanded?: boolean;
 }
 
-interface SidebarProps {
-  activePage?: string;
-  onNavigate?: (page: string) => void;
-}
+const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activePage = location.pathname.slice(1) || 'threat-radar';
 
-const Sidebar: React.FC<SidebarProps> = ({ activePage = 'threat-radar', onNavigate }) => {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     'Network': true,
   });
@@ -61,10 +61,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage = 'threat-radar', onNaviga
       label: 'Network',
       icon: Network,
       children: [
-        { label: 'Threat Radar', path: 'threat-radar', active: activePage === 'threat-radar' },
-        { label: 'Threat Radar 2', path: 'threat-radar-2', active: activePage === 'threat-radar-2' },
-        { label: 'Interventions', path: 'interventions', active: activePage === 'interventions' },
-        { label: 'Early Warning', path: 'early-warning', active: activePage === 'early-warning' }
+        { label: 'Threat Radar', path: 'threat-radar' },
+        { label: 'Threat Radar 2', path: 'threat-radar-2' },
+        { label: 'Interventions', path: 'interventions' },
+        { label: 'Early Warning', path: 'early-warning' }
       ]
     },
     { label: 'User Management', icon: UserCog, children: [] },
@@ -102,19 +102,22 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage = 'threat-radar', onNaviga
               isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            {item.children.map((child, idx) => (
-              <button
-                key={idx}
-                onClick={() => child.path && onNavigate && onNavigate(child.path)}
-                className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                  child.active
-                    ? 'text-purple-600 bg-purple-50 font-medium border-l-2 border-purple-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                {child.label}
-              </button>
-            ))}
+            {item.children.map((child, idx) => {
+              const isActive = child.path === activePage;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => child.path && navigate(`/${child.path}`)}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                    isActive
+                      ? 'text-purple-600 bg-purple-50 font-medium border-l-2 border-purple-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  {child.label}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

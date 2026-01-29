@@ -1,19 +1,20 @@
-import { useState } from 'react'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import ThreatRadar from './ThreatRadar'
 import ThreatRadar2 from './ThreatRadar2'
 import Interventions from './Interventions'
 import EarlyWarning from './EarlyWarning'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<string>('threat-radar')
-
   return (
-    <>
-      {currentPage === 'threat-radar' && <ThreatRadar onNavigate={setCurrentPage} />}
-      {currentPage === 'threat-radar-2' && <ThreatRadar2 onNavigate={setCurrentPage} />}
-      {currentPage === 'interventions' && <Interventions onNavigate={setCurrentPage} />}
-      {currentPage === 'early-warning' && <EarlyWarning onNavigate={setCurrentPage} />}
-    </>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/threat-radar" replace />} />
+        <Route path="/threat-radar" element={<ThreatRadar />} />
+        <Route path="/threat-radar-2" element={<ThreatRadar2 />} />
+        <Route path="/interventions" element={<Interventions />} />
+        <Route path="/early-warning" element={<EarlyWarning />} />
+      </Routes>
+    </HashRouter>
   )
 }
 
