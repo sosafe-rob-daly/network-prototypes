@@ -59,7 +59,7 @@ interface TimelineEventProps {
 const initialThreats: Threat[] = [
   {
     id: 1,
-    name: 'DocuSign Credential Harvest',
+    name: 'DocuSign Creds Breach',
     type: 'Phishing',
     severity: 'critical',
     detectedAt: 'Frankfurt, DE',
@@ -72,7 +72,7 @@ const initialThreats: Threat[] = [
   },
   {
     id: 2,
-    name: 'Microsoft 365 MFA Bypass',
+    name: 'M365 MFA Bypass',
     type: 'Credential Theft',
     severity: 'high',
     detectedAt: 'London, UK',
