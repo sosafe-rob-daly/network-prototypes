@@ -149,14 +149,16 @@ const ThreatCard: React.FC<ThreatCardProps> = ({ threat, isActive, onClick }) =>
   return (
     <div
       onClick={onClick}
-      className={`bg-gray-100 rounded-2xl p-5 cursor-pointer transition-all ${
-        isActive ? 'ring-2 ring-gray-300' : 'hover:bg-gray-150'
+      className={`rounded-2xl p-5 cursor-pointer transition-all ${
+        isActive
+          ? 'bg-gradient-to-br from-blue-50 to-gray-100 border border-blue-200'
+          : 'bg-gray-100 hover:bg-gray-150'
       }`}
     >
       <div className="flex items-start gap-3">
         <div className={`w-2.5 h-2.5 rounded-full mt-1.5 ${severityColors[threat.severity]}`} />
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-extrabold text-gray-900">{threat.name}</h3>
+          <h3 className="text-sm font-bold text-gray-900">{threat.name}</h3>
           <p className="text-xs text-gray-900 mt-1">{threat.detectedAt} · {threat.detectedTime}</p>
           <p className="text-xs text-gray-900 mt-2">
             Click rate: <span className="font-bold">{threat.successRate}</span>
@@ -442,7 +444,7 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab('network')}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${
               activeTab === 'network'
                 ? 'bg-gray-100 text-gray-900'
                 : 'text-gray-600 hover:bg-gray-50'
@@ -452,7 +454,7 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
           </button>
           <button
             onClick={() => setActiveTab('my-org')}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${
               activeTab === 'my-org'
                 ? 'bg-gray-100 text-gray-900'
                 : 'text-gray-600 hover:bg-gray-50'
@@ -470,13 +472,13 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
       ) : (
         <div style={{ height: '300px' }}>
           {/* My Organization View */}
-          <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-200">
+          <div className="mb-4 p-4 bg-gray-100 rounded-2xl">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-semibold text-purple-900">Forrester Research Inc.</div>
-                <div className="text-xs text-purple-700 mt-0.5">{deployedCount} of {departments.length} departments protected • {deployedEmployees} of {totalEmployees} employees</div>
+                <div className="text-sm font-bold text-gray-900">Forrester Research Inc.</div>
+                <div className="text-xs text-gray-900 mt-0.5">{deployedCount} of {departments.length} departments protected • {deployedEmployees} of {totalEmployees} employees</div>
               </div>
-              <CheckCircle size={20} className="text-green-600" />
+              <CheckCircle size={20} className="text-green-500" />
             </div>
           </div>
 
@@ -485,27 +487,23 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
             {departments.map((dept) => (
               <div
                 key={dept.id}
-                className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-                  dept.deployed
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-gray-50 border-gray-200'
-                }`}
+                className="flex items-center justify-between p-3 bg-gray-100 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${dept.deployed ? 'bg-green-500' : 'bg-gray-400'}`} />
+                  <div className={`w-2.5 h-2.5 rounded-full ${dept.deployed ? 'bg-green-500' : 'bg-gray-400'}`} />
                   <div>
-                    <div className="text-sm font-medium text-gray-900">{dept.name}</div>
-                    <div className="text-xs text-gray-600">{dept.employees} employees</div>
+                    <div className="text-sm font-bold text-gray-900">{dept.name}</div>
+                    <div className="text-xs text-gray-900">{dept.employees} employees</div>
                   </div>
                 </div>
                 <div className="text-right">
                   {dept.deployed ? (
                     <div>
-                      <div className="text-xs font-semibold text-green-700">Deployed</div>
-                      <div className="text-xs text-green-600">{dept.deployedAt}</div>
+                      <div className="text-xs font-bold text-gray-900">Deployed</div>
+                      <div className="text-xs text-gray-900">{dept.deployedAt}</div>
                     </div>
                   ) : (
-                    <div className="text-xs text-gray-500">Pending</div>
+                    <div className="text-xs font-bold text-gray-900">Pending</div>
                   )}
                 </div>
               </div>
