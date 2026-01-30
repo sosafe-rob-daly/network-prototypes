@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactECharts from 'echarts-for-react';
 import { AlertTriangle, TrendingUp, Zap, Target, Shield, ChevronRight, Activity, Gauge, TrendingDown, Info } from 'lucide-react';
 import Sidebar from './Sidebar';
 
@@ -464,147 +465,137 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   };
   const actualColor = riskColors[cohort.riskLevel];
 
+  // X-axis categories (weeks)
+  const xAxisData = ['-8 wks', '-6 wks', '-4 wks', '-2 wks', 'Today', '+2 wks', '+4 wks'];
+
+  // Convert trajectory data to ECharts format
+  const mapToChartData = (points: TrajectoryPoint[]) => {
+    return points.map(p => {
+      const weekIndex = (p.week + 8) / 2; // Convert week to index (0-6)
+      return [weekIndex, p.hsi];
+    });
+  };
+
+  const chartOption = {
+    grid: {
+      left: 45,
+      right: 20,
+      top: 20,
+      bottom: 35,
+      containLabel: false,
+    },
+    xAxis: {
+      type: 'category',
+      data: xAxisData,
+      boundaryGap: false,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: {
+        color: '#6b7280',
+        fontSize: 11,
+        fontFamily: 'Inter, system-ui, sans-serif',
+      },
+    },
+    yAxis: {
+      type: 'value',
+      min: 0,
+      max: 100,
+      interval: 25,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: {
+        show: true,
+        lineStyle: { color: '#e5e7eb', type: 'solid' },
+      },
+      axisLabel: {
+        color: '#6b7280',
+        fontSize: 11,
+        fontFamily: 'Inter, system-ui, sans-serif',
+      },
+    },
+    series: [
+      // Network incident pattern (dashed amber)
+      {
+        name: 'Network incident pattern',
+        type: 'line',
+        data: mapToChartData(data.network),
+        smooth: false,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: {
+          color: '#d97706',
+          width: 3,
+          type: 'dashed',
+          opacity: 0.7,
+        },
+        itemStyle: {
+          color: '#d97706',
+          opacity: 0.9,
+        },
+      },
+      // Actual trajectory (solid, risk-colored)
+      {
+        name: 'Your cohort (actual)',
+        type: 'line',
+        data: mapToChartData(data.actual),
+        smooth: false,
+        symbol: 'circle',
+        symbolSize: 10,
+        lineStyle: {
+          color: actualColor,
+          width: 3,
+        },
+        itemStyle: {
+          color: actualColor,
+        },
+      },
+      // Predicted trajectory (dashed gray)
+      {
+        name: 'Predicted',
+        type: 'line',
+        data: mapToChartData(data.predicted),
+        smooth: false,
+        symbol: 'circle',
+        symbolSize: 6,
+        lineStyle: {
+          color: '#9ca3af',
+          width: 3,
+          type: 'dashed',
+        },
+        itemStyle: {
+          color: '#9ca3af',
+        },
+      },
+    ],
+    legend: {
+      show: true,
+      bottom: 0,
+      itemWidth: 24,
+      itemHeight: 3,
+      textStyle: {
+        color: '#111827',
+        fontSize: 11,
+        fontFamily: 'Inter, system-ui, sans-serif',
+      },
+    },
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <div className="mb-6">
+      <div className="mb-4">
         <h3 className="text-lg font-extrabold text-gray-900 mb-2">Risk Trajectory Analysis</h3>
         <p className="text-xs text-gray-900">
           Comparing {cohort.name} behavior pattern against {cohort.matchedPattern.occurrences} historical incidents
         </p>
       </div>
 
-      {/* Chart visualization */}
-      <div className="relative h-80 bg-gray-100 rounded-xl p-6 mb-4">
-        <div className="absolute inset-0 p-6">
-          {/* Y-axis labels */}
-          <div className="absolute left-2 top-6 bottom-6 flex flex-col justify-between text-xs text-gray-500">
-            <span>100</span>
-            <span>75</span>
-            <span>50</span>
-            <span>25</span>
-            <span>0</span>
-          </div>
-
-          {/* Chart area */}
-          <div className="ml-8 h-full relative">
-            {/* Grid lines */}
-            <div className="absolute inset-0 flex flex-col justify-between">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="border-t border-gray-200" />
-              ))}
-            </div>
-
-            {/* All chart lines in one SVG with viewBox */}
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
-              {/* Network pattern (historical incidents) - amber dashed */}
-              <polyline
-                points={data.network.map((p) => {
-                  const x = ((p.week + 8) / 12) * 100;
-                  const y = 100 - p.hsi;
-                  return `${x},${y}`;
-                }).join(' ')}
-                fill="none"
-                stroke="#d97706"
-                strokeWidth="0.5"
-                strokeDasharray="2,1"
-                opacity="0.7"
-                vectorEffect="non-scaling-stroke"
-              />
-              {data.network.map((p, idx) => (
-                <circle
-                  key={`network-${idx}`}
-                  cx={((p.week + 8) / 12) * 100}
-                  cy={100 - p.hsi}
-                  r="1.5"
-                  fill="#d97706"
-                  opacity="0.9"
-                />
-              ))}
-
-              {/* Actual trajectory - colored by risk level */}
-              <polyline
-                points={data.actual.map((p) => {
-                  const x = ((p.week + 8) / 12) * 100;
-                  const y = 100 - p.hsi;
-                  return `${x},${y}`;
-                }).join(' ')}
-                fill="none"
-                stroke={actualColor}
-                strokeWidth="0.5"
-                vectorEffect="non-scaling-stroke"
-              />
-              {data.actual.map((p, idx) => (
-                <circle
-                  key={`actual-${idx}`}
-                  cx={((p.week + 8) / 12) * 100}
-                  cy={100 - p.hsi}
-                  r="1.5"
-                  fill={actualColor}
-                />
-              ))}
-
-              {/* Predicted trajectory - dashed gray */}
-              <polyline
-                points={data.predicted.map((p) => {
-                  const x = ((p.week + 8) / 12) * 100;
-                  const y = 100 - p.hsi;
-                  return `${x},${y}`;
-                }).join(' ')}
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="0.5"
-                strokeDasharray="2,1"
-                vectorEffect="non-scaling-stroke"
-              />
-              {data.predicted.map((p, idx) => (
-                <circle
-                  key={`predicted-${idx}`}
-                  cx={((p.week + 8) / 12) * 100}
-                  cy={100 - p.hsi}
-                  r="1"
-                  fill="#9ca3af"
-                />
-              ))}
-            </svg>
-
-            {/* X-axis labels */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-500 translate-y-6">
-              <span>-8 wks</span>
-              <span>-6 wks</span>
-              <span>-4 wks</span>
-              <span>-2 wks</span>
-              <span className="font-semibold text-gray-900">Today</span>
-              <span>+2 wks</span>
-              <span>+4 wks</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-6 text-xs">
-        <div className="flex items-center gap-2">
-          <svg width="32" height="8">
-            <line x1="0" y1="4" x2="32" y2="4" stroke={actualColor} strokeWidth="3" />
-          </svg>
-          <span className="text-gray-900">Your cohort (actual)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <svg width="32" height="8">
-            <line x1="0" y1="4" x2="32" y2="4" stroke="#9ca3af" strokeWidth="3" strokeDasharray="6,4" />
-          </svg>
-          <span className="text-gray-900">Predicted</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <svg width="32" height="8">
-            <line x1="0" y1="4" x2="32" y2="4" stroke="#d97706" strokeWidth="3" strokeDasharray="8,4" opacity="0.7" />
-          </svg>
-          <span className="text-gray-900">Network incident pattern</span>
-        </div>
+      {/* ECharts visualization */}
+      <div className="bg-gray-50 rounded-xl p-4">
+        <ReactECharts option={chartOption} style={{ height: '280px' }} />
       </div>
 
       {/* Pattern details */}
-      <div className="mt-6 p-4 bg-gray-100 rounded-xl">
+      <div className="mt-4 p-4 bg-gray-100 rounded-xl">
         <div className="flex items-start gap-3">
           <Activity size={20} className="text-gray-900 mt-0.5" />
           <div>
