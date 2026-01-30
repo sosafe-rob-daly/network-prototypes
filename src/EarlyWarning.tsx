@@ -257,7 +257,7 @@ const RiskBadge: React.FC<{ level: RiskLevel }> = ({ level }) => {
 
 const UrgencyCountdown: React.FC<{ days: number; riskLevel: RiskLevel }> = ({ days }) => {
   return (
-    <div className="bg-gray-100 rounded-2xl p-6">
+    <div className="bg-white rounded-2xl border border-gray-200 p-6">
       <div className="flex items-center gap-3">
         <Clock size={24} className="text-gray-900" />
         <div>
@@ -402,7 +402,7 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
     <div
       onClick={onClick}
       className={`rounded-2xl p-5 cursor-pointer transition-all ${
-        isActive ? 'bg-gray-50 border-2 border-gray-300' : 'bg-gray-100 hover:bg-gray-50'
+        isActive ? 'bg-white border-2 border-gray-400' : 'bg-white border border-gray-200 hover:border-gray-300'
       }`}
     >
       <div className="mb-4">
@@ -686,26 +686,23 @@ export default function EarlyWarning() {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-3 gap-6">
-            {/* Cohort List */}
-            <div className="col-span-1 space-y-4">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-extrabold text-gray-900">At-Risk Cohorts</h2>
-                <span className="text-xs text-gray-900">Sorted by urgency</span>
+          <div className="bg-gray-50 rounded-3xl border border-gray-200 p-6">
+            <h2 className="text-lg font-extrabold text-gray-900 mb-4">At-Risk Cohorts</h2>
+            <div className="grid grid-cols-3 gap-6">
+              {/* Cohort List */}
+              <div className="col-span-1 space-y-4">
+                {cohorts.map((cohort) => (
+                  <CohortCard
+                    key={cohort.id}
+                    cohort={cohort}
+                    onClick={() => setSelectedCohort(cohort)}
+                    isActive={selectedCohort?.id === cohort.id}
+                  />
+                ))}
               </div>
 
-              {cohorts.map((cohort) => (
-                <CohortCard
-                  key={cohort.id}
-                  cohort={cohort}
-                  onClick={() => setSelectedCohort(cohort)}
-                  isActive={selectedCohort?.id === cohort.id}
-                />
-              ))}
-            </div>
-
-            {/* Detail Panel */}
-            <div className="col-span-2 space-y-4 pt-8">
+              {/* Detail Panel */}
+              <div className="col-span-2 space-y-4">
               {selectedCohort && (
                 <>
                   <UrgencyCountdown days={selectedCohort.daysToAction} riskLevel={selectedCohort.riskLevel} />
@@ -714,7 +711,7 @@ export default function EarlyWarning() {
 
                   <TrajectoryChart cohort={selectedCohort} />
 
-                  <div className="bg-gray-100 rounded-2xl p-6">
+                  <div className="bg-white rounded-2xl border border-gray-200 p-6">
                     <div className="flex items-center gap-2 mb-4">
                       <Zap size={24} className="text-gray-900" />
                       <h3 className="text-xl font-extrabold text-gray-900">Recommended Intervention</h3>
@@ -745,6 +742,7 @@ export default function EarlyWarning() {
                 </>
               )}
             </div>
+          </div>
           </div>
         </div>
       </div>

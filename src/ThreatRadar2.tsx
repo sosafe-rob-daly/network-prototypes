@@ -656,6 +656,7 @@ const TimelineEvent: React.FC<TimelineEventProps & { color?: string }> = ({ time
 const ReportedThreatFeed: React.FC = () => {
   const [threats, setThreats] = useState(reportedThreats);
   const [newItemId, setNewItemId] = useState<number | null>(null);
+  const [reportCount, setReportCount] = useState(80);
 
   const statusConfig: Record<ReportStatus, { label: string; color: string }> = {
     analyzing: { label: 'Analyzing', color: 'bg-gray-200 text-gray-600' },
@@ -676,6 +677,7 @@ const ReportedThreatFeed: React.FC = () => {
           confirmedBy: undefined,
         };
         setNewItemId(updatedItem.id);
+        setReportCount(prev => prev + 1);
         return [updatedItem, ...prev.slice(0, -1)];
       });
     }, 10000);
@@ -693,15 +695,12 @@ const ReportedThreatFeed: React.FC = () => {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="text-lg font-extrabold text-gray-900">Threat Report Feed</h3>
-          <p className="text-xs text-gray-900 mt-0.5">Real-time PRB reports from across the network</p>
-        </div>
-        <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg">
+      <div className="mb-4">
+        <h3 className="text-lg font-extrabold text-gray-900">Threat Report Feed</h3>
+        <div className="flex items-center gap-2 mt-0.5">
           <Mail size={14} className="text-gray-600" />
           <span className="text-sm font-bold text-gray-900">247</span>
-          <span className="text-xs text-gray-600">reports/hour</span>
+          <span className="text-xs text-gray-600">unique reports this week</span>
         </div>
       </div>
 
@@ -753,12 +752,14 @@ const ReportedThreatFeed: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-2 pt-2 flex items-center justify-between">
-        <div className="text-xs text-gray-600">
-          <span className="font-bold text-gray-900">1,247</span> reports analyzed in last 24h
+      <div className="mt-4 pt-4 flex items-center justify-between">
+        <div>
+          <div className="text-xs text-gray-600">Last 24H</div>
+          <div className="text-sm font-bold text-gray-900">{reportCount} reports</div>
         </div>
-        <button className="text-xs font-bold text-gray-900 hover:underline">
-          View all reports →
+        <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
+          View all reports
+          <ArrowRight size={16} />
         </button>
       </div>
     </div>
@@ -999,7 +1000,7 @@ export default function ThreatRadar2() {
               <ReportedThreatFeed />
             </div>
             <div className="col-span-2">
-              <div className="grid grid-cols-2 gap-4 h-full">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-2xl border border-gray-200 p-6">
                   <h3 className="text-lg font-extrabold text-gray-900 mb-4">Propagation Timeline</h3>
                   <div className="space-y-1">
@@ -1021,17 +1022,15 @@ export default function ThreatRadar2() {
                   <p className="text-xs text-gray-900 mt-2">
                     Every SoSafe customer makes every other customer more secure. This threat is now being simulated across {activeThreat?.protectedOrgs?.toLocaleString() ?? '0'} organizations.
                   </p>
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-2xl font-bold text-gray-900">4 min</div>
-                        <div className="text-xs text-gray-900">Detection → Defense</div>
-                      </div>
-                      <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
-                        View Details
-                        <ArrowRight size={16} />
-                      </button>
+                  <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                    <div>
+                      <div className="text-2xl font-bold text-gray-900">4 min</div>
+                      <div className="text-xs text-gray-900">Detection → Defense</div>
                     </div>
+                    <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
+                      View Details
+                      <ArrowRight size={16} />
+                    </button>
                   </div>
                 </div>
               </div>

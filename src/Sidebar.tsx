@@ -17,6 +17,7 @@ import {
   Network
 } from 'lucide-react';
 import soSafeLogo from './assets/sosafe-logo.png';
+import personImage from '../Assets/Person.png';
 
 interface NavItem {
   label: string;
@@ -141,12 +142,10 @@ const Sidebar: React.FC = () => {
           <img src={soSafeLogo} alt="SoSafe" className="h-6" />
         </div>
         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
-            D
-          </div>
+          <img src={personImage} alt="Melissa Sands" className="w-10 h-10 rounded-full object-cover" />
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-gray-900">Dr. Backend</div>
-            <div className="text-xs text-gray-500 truncate">dr.backend@sosafe.de</div>
+            <div className="text-sm font-medium text-gray-900">Melissa Sands</div>
+            <div className="text-xs text-gray-500 truncate">m.sands@sosafe.com</div>
           </div>
           <ChevronDown size={16} className="text-gray-400" />
         </div>
