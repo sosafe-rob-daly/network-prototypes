@@ -323,12 +323,17 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
         </div>
         <div className="mt-3 h-3 bg-gray-200 rounded-full overflow-hidden relative">
           <div
-            className="h-full transition-all rounded-full"
-            style={{
-              width: `${riskScore.composite}%`,
-              background: 'linear-gradient(to right, #22c55e, #facc15, #fb923c, #ef4444)'
-            }}
-          />
+            className="h-full transition-all overflow-hidden rounded-full"
+            style={{ width: `${riskScore.composite}%` }}
+          >
+            <div
+              className="h-full"
+              style={{
+                width: `${riskScore.composite > 0 ? (100 / riskScore.composite) * 100 : 0}%`,
+                background: 'linear-gradient(to right, #22c55e, #facc15, #fb923c, #ef4444)'
+              }}
+            />
+          </div>
         </div>
       </div>
 
