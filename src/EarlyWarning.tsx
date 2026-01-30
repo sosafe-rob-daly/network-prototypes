@@ -494,91 +494,77 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
               ))}
             </div>
 
-            {/* Network pattern (historical incidents) - amber dashed */}
-            <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
+            {/* All chart lines in one SVG with viewBox */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+              {/* Network pattern (historical incidents) - amber dashed */}
               <polyline
                 points={data.network.map((p) => {
                   const x = ((p.week + 8) / 12) * 100;
                   const y = 100 - p.hsi;
-                  return `${x}%,${y}%`;
+                  return `${x},${y}`;
                 }).join(' ')}
                 fill="none"
                 stroke="#d97706"
-                strokeWidth="3"
-                strokeDasharray="8,4"
+                strokeWidth="0.5"
+                strokeDasharray="2,1"
                 opacity="0.7"
+                vectorEffect="non-scaling-stroke"
               />
               {data.network.map((p, idx) => (
-                <g key={idx}>
-                  <circle
-                    cx={`${((p.week + 8) / 12) * 100}%`}
-                    cy={`${100 - p.hsi}%`}
-                    r="4"
-                    fill="#d97706"
-                    opacity="0.9"
-                  />
-                  {p.label && (
-                    <text
-                      x={`${((p.week + 8) / 12) * 100}%`}
-                      y={`${100 - p.hsi - 8}%`}
-                      textAnchor="middle"
-                      className="text-xs font-semibold fill-amber-600"
-                    >
-                      {p.label}
-                    </text>
-                  )}
-                </g>
+                <circle
+                  key={`network-${idx}`}
+                  cx={((p.week + 8) / 12) * 100}
+                  cy={100 - p.hsi}
+                  r="1.5"
+                  fill="#d97706"
+                  opacity="0.9"
+                />
               ))}
-            </svg>
 
-            {/* Actual trajectory - colored by risk level */}
-            <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
+              {/* Actual trajectory - colored by risk level */}
               <polyline
                 points={data.actual.map((p) => {
                   const x = ((p.week + 8) / 12) * 100;
                   const y = 100 - p.hsi;
-                  return `${x}%,${y}%`;
+                  return `${x},${y}`;
                 }).join(' ')}
                 fill="none"
                 stroke={actualColor}
-                strokeWidth="3"
+                strokeWidth="0.5"
+                vectorEffect="non-scaling-stroke"
               />
               {data.actual.map((p, idx) => (
-                <g key={idx}>
-                  <circle
-                    cx={`${((p.week + 8) / 12) * 100}%`}
-                    cy={`${100 - p.hsi}%`}
-                    r="5"
-                    fill={actualColor}
-                  />
-                  {p.label && (
-                    <text
-                      x={`${((p.week + 8) / 12) * 100}%`}
-                      y={`${100 - p.hsi + 20}%`}
-                      textAnchor="middle"
-                      className="text-xs font-semibold"
-                      fill={actualColor}
-                    >
-                      {p.label}
-                    </text>
-                  )}
-                </g>
+                <circle
+                  key={`actual-${idx}`}
+                  cx={((p.week + 8) / 12) * 100}
+                  cy={100 - p.hsi}
+                  r="1.5"
+                  fill={actualColor}
+                />
               ))}
-            </svg>
 
-            {/* Predicted trajectory - dashed gray */}
-            <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
+              {/* Predicted trajectory - dashed gray */}
               <polyline
                 points={data.predicted.map((p) => {
                   const x = ((p.week + 8) / 12) * 100;
                   const y = 100 - p.hsi;
-                  return `${x}%,${y}%`;
+                  return `${x},${y}`;
                 }).join(' ')}
                 fill="none"
                 stroke="#9ca3af"
-                strokeWidth="3"
-                strokeDasharray="6,4"
+                strokeWidth="0.5"
+                strokeDasharray="2,1"
+                vectorEffect="non-scaling-stroke"
               />
+              {data.predicted.map((p, idx) => (
+                <circle
+                  key={`predicted-${idx}`}
+                  cx={((p.week + 8) / 12) * 100}
+                  cy={100 - p.hsi}
+                  r="1"
+                  fill="#9ca3af"
+                />
+              ))}
             </svg>
 
             {/* X-axis labels */}
