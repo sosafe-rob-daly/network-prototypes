@@ -705,7 +705,7 @@ export default function EarlyWarning() {
             </div>
 
             {/* Detail Panel */}
-            <div className="col-span-2 space-y-4">
+            <div className="col-span-2 space-y-4 pt-8">
               {selectedCohort && (
                 <>
                   <UrgencyCountdown days={selectedCohort.daysToAction} riskLevel={selectedCohort.riskLevel} />
