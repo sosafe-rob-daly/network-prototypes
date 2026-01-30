@@ -183,58 +183,104 @@ const cohorts: RiskCohort[] = [
   },
 ];
 
-// Mock trajectory data
-const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], predicted: TrajectoryPoint[], network: TrajectoryPoint[] } => {
-  const basePatterns = [
-    // Finance (critical decline)
-    {
-      actual: [
-        { week: -8, hsi: 78 },
-        { week: -6, hsi: 74 },
-        { week: -4, hsi: 68 },
-        { week: -2, hsi: 62 },
-        { week: 0, hsi: 58, label: 'Today' },
-      ],
-      predicted: [
-        { week: 0, hsi: 58 },
-        { week: 2, hsi: 54 },
-        { week: 4, hsi: 48 },
-      ],
-      network: [
-        { week: -8, hsi: 76 },
-        { week: -6, hsi: 71 },
-        { week: -4, hsi: 64 },
-        { week: -2, hsi: 58 },
-        { week: 0, hsi: 52 },
-        { week: 2, hsi: 45, label: 'Avg Incident' },
-      ],
-    },
-    // Executive (moderate decline)
-    {
-      actual: [
-        { week: -8, hsi: 76 },
-        { week: -6, hsi: 73 },
-        { week: -4, hsi: 70 },
-        { week: -2, hsi: 67 },
-        { week: 0, hsi: 64, label: 'Today' },
-      ],
-      predicted: [
-        { week: 0, hsi: 64 },
-        { week: 2, hsi: 61 },
-        { week: 4, hsi: 57 },
-      ],
-      network: [
-        { week: -8, hsi: 74 },
-        { week: -6, hsi: 70 },
-        { week: -4, hsi: 65 },
-        { week: -2, hsi: 60 },
-        { week: 0, hsi: 55 },
-        { week: 2, hsi: 49, label: 'Avg Incident' },
-      ],
-    },
-  ];
+// Mock trajectory data - one pattern per cohort
+const trajectoryPatterns: Record<number, { actual: TrajectoryPoint[], predicted: TrajectoryPoint[], network: TrajectoryPoint[] }> = {
+  // Executive Leadership (critical - declining sharply)
+  1: {
+    actual: [
+      { week: -8, hsi: 78 },
+      { week: -6, hsi: 74 },
+      { week: -4, hsi: 70 },
+      { week: -2, hsi: 67 },
+      { week: 0, hsi: 64, label: 'Today' },
+    ],
+    predicted: [
+      { week: 0, hsi: 64 },
+      { week: 2, hsi: 58 },
+      { week: 4, hsi: 52 },
+    ],
+    network: [
+      { week: -8, hsi: 76 },
+      { week: -6, hsi: 71 },
+      { week: -4, hsi: 64 },
+      { week: -2, hsi: 58 },
+      { week: 0, hsi: 52 },
+      { week: 2, hsi: 45, label: 'Avg Incident' },
+    ],
+  },
+  // Finance Team (low risk - improving)
+  2: {
+    actual: [
+      { week: -8, hsi: 68 },
+      { week: -6, hsi: 72 },
+      { week: -4, hsi: 76 },
+      { week: -2, hsi: 79 },
+      { week: 0, hsi: 82, label: 'Today' },
+    ],
+    predicted: [
+      { week: 0, hsi: 82 },
+      { week: 2, hsi: 84 },
+      { week: 4, hsi: 86 },
+    ],
+    network: [
+      { week: -8, hsi: 70 },
+      { week: -6, hsi: 74 },
+      { week: -4, hsi: 78 },
+      { week: -2, hsi: 81 },
+      { week: 0, hsi: 84 },
+      { week: 2, hsi: 87, label: 'Stable' },
+    ],
+  },
+  // New Hires (high risk - declining)
+  3: {
+    actual: [
+      { week: -8, hsi: 65 },
+      { week: -6, hsi: 60 },
+      { week: -4, hsi: 56 },
+      { week: -2, hsi: 54 },
+      { week: 0, hsi: 52, label: 'Today' },
+    ],
+    predicted: [
+      { week: 0, hsi: 52 },
+      { week: 2, hsi: 48 },
+      { week: 4, hsi: 44 },
+    ],
+    network: [
+      { week: -8, hsi: 62 },
+      { week: -6, hsi: 57 },
+      { week: -4, hsi: 51 },
+      { week: -2, hsi: 46 },
+      { week: 0, hsi: 42 },
+      { week: 2, hsi: 38, label: 'Avg Incident' },
+    ],
+  },
+  // HR Department (medium risk - slight decline)
+  4: {
+    actual: [
+      { week: -8, hsi: 76 },
+      { week: -6, hsi: 74 },
+      { week: -4, hsi: 73 },
+      { week: -2, hsi: 72 },
+      { week: 0, hsi: 71, label: 'Today' },
+    ],
+    predicted: [
+      { week: 0, hsi: 71 },
+      { week: 2, hsi: 68 },
+      { week: 4, hsi: 65 },
+    ],
+    network: [
+      { week: -8, hsi: 74 },
+      { week: -6, hsi: 70 },
+      { week: -4, hsi: 66 },
+      { week: -2, hsi: 62 },
+      { week: 0, hsi: 58 },
+      { week: 2, hsi: 54, label: 'Avg Incident' },
+    ],
+  },
+};
 
-  return cohortId === 1 ? basePatterns[0] : basePatterns[1];
+const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], predicted: TrajectoryPoint[], network: TrajectoryPoint[] } => {
+  return trajectoryPatterns[cohortId] || trajectoryPatterns[1];
 };
 
 const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
@@ -409,6 +455,15 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
 const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   const data = generateTrajectory(cohort.id);
 
+  // Color based on risk level
+  const riskColors: Record<RiskLevel, string> = {
+    critical: '#ef4444', // red-500
+    high: '#f97316',     // orange-500
+    medium: '#eab308',   // yellow-500
+    low: '#22c55e',      // green-500
+  };
+  const actualColor = riskColors[cohort.riskLevel];
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6">
       <div className="mb-6">
@@ -476,7 +531,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
               ))}
             </svg>
 
-            {/* Actual trajectory - solid gray */}
+            {/* Actual trajectory - colored by risk level */}
             <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
               <polyline
                 points={data.actual.map((p) => {
@@ -485,7 +540,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                   return `${x}%,${y}%`;
                 }).join(' ')}
                 fill="none"
-                stroke="#111827"
+                stroke={actualColor}
                 strokeWidth="3"
               />
               {data.actual.map((p, idx) => (
@@ -494,14 +549,15 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                     cx={`${((p.week + 8) / 12) * 100}%`}
                     cy={`${100 - p.hsi}%`}
                     r="5"
-                    fill="#111827"
+                    fill={actualColor}
                   />
                   {p.label && (
                     <text
                       x={`${((p.week + 8) / 12) * 100}%`}
                       y={`${100 - p.hsi + 20}%`}
                       textAnchor="middle"
-                      className="text-xs font-semibold fill-gray-900"
+                      className="text-xs font-semibold"
+                      fill={actualColor}
                     >
                       {p.label}
                     </text>
@@ -542,15 +598,21 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
       {/* Legend */}
       <div className="flex items-center justify-center gap-6 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-gray-900" />
+          <svg width="32" height="8">
+            <line x1="0" y1="4" x2="32" y2="4" stroke={actualColor} strokeWidth="3" />
+          </svg>
           <span className="text-gray-900">Your cohort (actual)</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-gray-400" style={{ borderTop: '3px dashed' }} />
+          <svg width="32" height="8">
+            <line x1="0" y1="4" x2="32" y2="4" stroke="#9ca3af" strokeWidth="3" strokeDasharray="6,4" />
+          </svg>
           <span className="text-gray-900">Predicted</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-amber-500 opacity-70" style={{ borderTop: '3px dashed' }} />
+          <svg width="32" height="8">
+            <line x1="0" y1="4" x2="32" y2="4" stroke="#d97706" strokeWidth="3" strokeDasharray="8,4" opacity="0.7" />
+          </svg>
           <span className="text-gray-900">Network incident pattern</span>
         </div>
       </div>
