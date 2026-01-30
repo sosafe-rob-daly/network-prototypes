@@ -938,7 +938,7 @@ export default function ThreatRadar2() {
           />
           <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
             <div className="flex items-center justify-between mb-3">
-              <div className="p-2.5 rounded-full bg-white">
+              <div className="p-1.5 rounded-full bg-white">
                 <Mail size={20} className="text-gray-900" />
               </div>
             </div>
@@ -948,7 +948,7 @@ export default function ThreatRadar2() {
           </div>
           <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
             <div className="flex items-center justify-between mb-3">
-              <div className="p-2.5 rounded-full bg-white">
+              <div className="p-1.5 rounded-full bg-white">
                 <Clock size={20} className="text-gray-900" />
               </div>
             </div>
