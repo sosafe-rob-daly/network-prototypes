@@ -237,24 +237,6 @@ const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], pred
   return cohortId === 1 ? basePatterns[0] : basePatterns[1];
 };
 
-const RiskBadge: React.FC<{ level: RiskLevel }> = ({ level }) => {
-  const config = {
-    critical: { label: 'Critical Risk', color: 'text-gray-900 bg-red-100 border-red-200', icon: '⚠️' },
-    high: { label: 'High Risk', color: 'text-gray-900 bg-orange-100 border-orange-200', icon: '●' },
-    medium: { label: 'Medium Risk', color: 'text-gray-900 bg-yellow-100 border-yellow-200', icon: '●' },
-    low: { label: 'Low Risk', color: 'text-gray-900 bg-green-100 border-green-200', icon: '✓' },
-  };
-
-  const { label, color, icon } = config[level];
-
-  return (
-    <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border ${color}`}>
-      <span>{icon}</span>
-      {label}
-    </span>
-  );
-};
-
 const UrgencyCountdown: React.FC<{ days: number; riskLevel: RiskLevel }> = ({ days }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6">
