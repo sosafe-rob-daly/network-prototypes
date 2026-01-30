@@ -65,7 +65,6 @@ const Sidebar: React.FC = () => {
         { label: 'Threat Radar', path: 'threat-radar' },
         { label: 'Interventions', path: 'interventions' },
         { label: 'Early Warning', path: 'early-warning' },
-        { label: 'Sofie Dashboard', path: 'sofie-dashboard' }
       ]
     },
     {
