@@ -366,20 +366,22 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
     <div
       onClick={onClick}
       className={`rounded-2xl p-5 cursor-pointer transition-all ${
-        isActive ? 'bg-white border-2 border-gray-400' : 'bg-white border border-gray-200 hover:border-gray-300'
+        isActive
+          ? 'bg-gradient-to-br from-blue-50 to-gray-100 border border-blue-200'
+          : 'bg-gray-100 hover:bg-gray-150'
       }`}
     >
       <div className="mb-4">
-        <h3 className="text-lg font-extrabold text-gray-900">{cohort.name}</h3>
+        <h3 className="text-sm font-bold text-gray-900">{cohort.name}</h3>
         <p className="text-xs text-gray-900 mt-1">{cohort.size} employees</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="bg-white rounded-lg p-3">
+        <div>
           <div className="text-xs text-gray-600 mb-1">Current HSI</div>
           <div className="text-2xl font-bold text-gray-900">{cohort.currentHSI}</div>
         </div>
-        <div className="bg-white rounded-lg p-3">
+        <div>
           <div className="text-xs text-gray-600 mb-1">Trend (30d)</div>
           <div className={`text-2xl font-bold ${trendColor}`}>
             {trendIcon}{Math.abs(cohort.trend)}%
@@ -387,17 +389,12 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
         </div>
       </div>
 
-      <div className="bg-white rounded-lg p-3 mb-4">
-        <div className="flex items-start gap-2">
-          <AlertTriangle size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
-          <div>
-            <div className="text-xs font-bold text-gray-900 mb-1">
-              Pattern Match: {cohort.matchedPattern.name}
-            </div>
-            <div className="text-xs text-gray-900">
-              Seen in {cohort.matchedPattern.occurrences} orgs before {cohort.matchedPattern.incidentType}
-            </div>
-          </div>
+      <div className="mb-4">
+        <div className="text-xs font-bold text-gray-900 mb-1">
+          Pattern Match: {cohort.matchedPattern.name}
+        </div>
+        <div className="text-xs text-gray-900">
+          Seen in {cohort.matchedPattern.occurrences} orgs before {cohort.matchedPattern.incidentType}
         </div>
       </div>
 
