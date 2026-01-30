@@ -120,7 +120,7 @@ const Sidebar: React.FC = () => {
                   onClick={() => child.path && navigate(`/${child.path}`)}
                   className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                     isActive
-                      ? 'text-gray-900 bg-gray-100 font-semibold border-l-2 border-gray-900'
+                      ? 'text-slate-900 bg-slate-100 font-bold border-l-2 border-slate-700'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
