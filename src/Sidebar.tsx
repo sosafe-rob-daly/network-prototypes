@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => {
       label: 'Network',
       icon: Network,
       children: [
-        { label: 'Threat Radar', path: 'threat-radar-2' },
+        { label: 'Threat Radar', path: 'threat-radar' },
         { label: 'Interventions', path: 'interventions' },
         { label: 'Early Warning', path: 'early-warning' },
         { label: 'Sofie Dashboard', path: 'sofie-dashboard' }
@@ -72,7 +72,7 @@ const Sidebar: React.FC = () => {
       label: 'Network (old)',
       icon: Network,
       children: [
-        { label: 'Threat Radar', path: 'threat-radar' },
+        { label: 'Threat Radar', path: 'threat-radar-2' },
         { label: 'Interventions', path: 'interventions-old' },
         { label: 'Early Warning', path: 'early-warning-old' }
       ]
