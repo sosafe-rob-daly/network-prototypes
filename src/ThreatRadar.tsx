@@ -532,7 +532,7 @@ export default function ThreatRadar() {
   }, [activeThreat]);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100">
       <Sidebar />
 
       <div className="flex-1 flex flex-col">

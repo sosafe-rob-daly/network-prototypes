@@ -316,7 +316,7 @@ export default function SofieDashboard() {
     : nudgeTemplates.filter(n => n.category === activeTab);
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex h-screen overflow-hidden bg-white">
       <Sidebar />
 
       <div className="flex-1 flex flex-col relative">

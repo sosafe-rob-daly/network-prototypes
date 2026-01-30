@@ -614,7 +614,7 @@ export default function EarlyWarning() {
   const highCount = cohorts.filter(c => c.riskLevel === 'high').length;
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex h-screen overflow-hidden bg-white">
       <Sidebar />
 
       <div className="flex-1 flex flex-col relative">
