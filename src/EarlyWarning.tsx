@@ -240,13 +240,6 @@ const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], pred
 const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   const { riskScore } = cohort;
 
-  const getScoreBgColor = (score: number) => {
-    if (score >= 80) return 'bg-red-500';
-    if (score >= 50) return 'bg-orange-400';
-    if (score >= 30) return 'bg-yellow-400';
-    return 'bg-green-500';
-  };
-
   const getScoreLabel = (score: number) => {
     if (score >= 80) return 'Critical';
     if (score >= 50) return 'High';
