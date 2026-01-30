@@ -344,7 +344,7 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="text-xs text-gray-500 mb-1">Impact Factor</div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-purple-600">{riskScore.impactFactor}x</span>
+            <span className="text-2xl font-bold text-gray-900">{riskScore.impactFactor}x</span>
           </div>
           <div className="text-xs text-gray-500 mt-1">Role & access multiplier</div>
         </div>
@@ -360,15 +360,15 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
       </div>
 
       {/* Impact Factor Explanation */}
-      <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
+      <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
         <div className="flex items-start gap-3">
-          <Info size={18} className="text-gray-900 mt-0.5 flex-shrink-0" />
+          <Info size={18} className="text-gray-600 mt-0.5 flex-shrink-0" />
           <div>
-            <div className="font-semibold text-purple-900 mb-2">Why Impact Factor is {riskScore.impactFactor}x</div>
-            <div className="text-xs text-purple-800 space-y-1.5">
+            <div className="font-semibold text-gray-900 mb-2">Why Impact Factor is {riskScore.impactFactor}x</div>
+            <div className="text-xs text-gray-600 space-y-1.5">
               <p>• {riskScore.impactExplanation.accessDescription}</p>
-              <p>• Average breach cost for this cohort: <strong>{riskScore.impactExplanation.avgBreachCost}</strong></p>
-              <p>• This is <strong>{riskScore.impactExplanation.multiplier}</strong></p>
+              <p>• Average breach cost for this cohort: <strong className="text-gray-900">{riskScore.impactExplanation.avgBreachCost}</strong></p>
+              <p>• This is <strong className="text-gray-900">{riskScore.impactExplanation.multiplier}</strong></p>
             </div>
           </div>
         </div>
@@ -393,7 +393,7 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
     <div
       onClick={onClick}
       className={`rounded-2xl p-5 cursor-pointer transition-all ${
-        isActive ? 'bg-gradient-to-br from-blue-50 to-gray-100 border border-blue-200' : 'bg-gray-100 hover:bg-gray-150'
+        isActive ? 'bg-gray-50 border-2 border-gray-300' : 'bg-gray-100 hover:bg-gray-50'
       }`}
     >
       <div className="flex items-start justify-between mb-4">
@@ -509,7 +509,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
               ))}
             </svg>
 
-            {/* Actual trajectory - solid purple */}
+            {/* Actual trajectory - solid gray */}
             <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
               <polyline
                 points={data.actual.map((p) => {
@@ -518,7 +518,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                   return `${x}%,${y}%`;
                 }).join(' ')}
                 fill="none"
-                stroke="#9333ea"
+                stroke="#111827"
                 strokeWidth="3"
               />
               {data.actual.map((p, idx) => (
@@ -527,14 +527,14 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                     cx={`${((p.week + 8) / 12) * 100}%`}
                     cy={`${100 - p.hsi}%`}
                     r="5"
-                    fill="#9333ea"
+                    fill="#111827"
                   />
                   {p.label && (
                     <text
                       x={`${((p.week + 8) / 12) * 100}%`}
                       y={`${100 - p.hsi + 20}%`}
                       textAnchor="middle"
-                      className="text-xs font-semibold fill-purple-600"
+                      className="text-xs font-semibold fill-gray-900"
                     >
                       {p.label}
                     </text>
@@ -543,7 +543,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
               ))}
             </svg>
 
-            {/* Predicted trajectory - dashed purple */}
+            {/* Predicted trajectory - dashed gray */}
             <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
               <polyline
                 points={data.predicted.map((p) => {
@@ -552,10 +552,9 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                   return `${x}%,${y}%`;
                 }).join(' ')}
                 fill="none"
-                stroke="#9333ea"
+                stroke="#9ca3af"
                 strokeWidth="3"
                 strokeDasharray="6,4"
-                opacity="0.5"
               />
             </svg>
 
@@ -565,7 +564,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
               <span>-6 wks</span>
               <span>-4 wks</span>
               <span>-2 wks</span>
-              <span className="font-semibold text-purple-600">Today</span>
+              <span className="font-semibold text-gray-900">Today</span>
               <span>+2 wks</span>
               <span>+4 wks</span>
             </div>
@@ -576,11 +575,11 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
       {/* Legend */}
       <div className="flex items-center justify-center gap-6 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-purple-600" />
+          <div className="w-8 h-0.5 bg-gray-900" />
           <span className="text-gray-900">Your cohort (actual)</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-purple-600 opacity-50" style={{ borderTop: '3px dashed' }} />
+          <div className="w-8 h-0.5 bg-gray-400" style={{ borderTop: '3px dashed' }} />
           <span className="text-gray-900">Predicted</span>
         </div>
         <div className="flex items-center gap-2">
