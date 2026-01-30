@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertTriangle, TrendingUp, Clock, Zap, Target, Shield, ChevronRight, Activity, Gauge, TrendingDown, Info } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Zap, Target, Shield, ChevronRight, Activity, Gauge, TrendingDown, Info } from 'lucide-react';
 import Sidebar from './Sidebar';
 
 // Type definitions
@@ -237,20 +237,6 @@ const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], pred
   return cohortId === 1 ? basePatterns[0] : basePatterns[1];
 };
 
-const UrgencyCountdown: React.FC<{ days: number; riskLevel: RiskLevel }> = ({ days }) => {
-  return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <div className="flex items-center gap-3">
-        <Clock size={24} className="text-gray-900" />
-        <div>
-          <div className="text-2xl font-bold text-gray-900">{days} Days</div>
-          <div className="text-xs text-gray-900">Recommended action window</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   const { riskScore } = cohort;
 
@@ -295,10 +281,13 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
           <span className="text-5xl font-black text-gray-900">{riskScore.composite}</span>
           <span className="text-xl text-gray-400">/100</span>
         </div>
-        <div className="mt-3 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div className="mt-3 h-3 bg-gray-200 rounded-full overflow-hidden relative">
           <div
-            className={`h-full ${getScoreBgColor(riskScore.composite)} transition-all`}
-            style={{ width: `${riskScore.composite}%` }}
+            className="h-full transition-all rounded-full"
+            style={{
+              width: `${riskScore.composite}%`,
+              background: 'linear-gradient(to right, #22c55e, #facc15, #fb923c, #ef4444)'
+            }}
           />
         </div>
       </div>
@@ -687,12 +676,6 @@ export default function EarlyWarning() {
               <div className="col-span-2 space-y-4">
               {selectedCohort && (
                 <>
-                  <UrgencyCountdown days={selectedCohort.daysToAction} riskLevel={selectedCohort.riskLevel} />
-
-                  <RiskScoreBreakdown cohort={selectedCohort} />
-
-                  <TrajectoryChart cohort={selectedCohort} />
-
                   <div className="bg-white rounded-2xl border border-gray-200 p-6">
                     <div className="flex items-center gap-2 mb-4">
                       <Zap size={24} className="text-gray-900" />
@@ -709,7 +692,7 @@ export default function EarlyWarning() {
                     </div>
 
                     <div className="flex gap-3">
-                      <button className="flex-1 bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                      <button className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
                         <Zap size={18} />
                         Deploy Now
                       </button>
@@ -721,6 +704,10 @@ export default function EarlyWarning() {
                       </button>
                     </div>
                   </div>
+
+                  <RiskScoreBreakdown cohort={selectedCohort} />
+
+                  <TrajectoryChart cohort={selectedCohort} />
                 </>
               )}
             </div>

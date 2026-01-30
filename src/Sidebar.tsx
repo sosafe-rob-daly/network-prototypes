@@ -145,7 +145,7 @@ const Sidebar: React.FC = () => {
           <img src={personImage} alt="Melissa Sands" className="w-10 h-10 rounded-full object-cover" />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-gray-900">Melissa Sands</div>
-            <div className="text-xs text-gray-500 truncate">m.sands@sosafe.com</div>
+            <div className="text-xs text-gray-500 truncate">m.sands@artifix.ai</div>
           </div>
           <ChevronDown size={16} className="text-gray-400" />
         </div>
