@@ -734,9 +734,9 @@ export default function EarlyWarning() {
                     </div>
                   </div>
 
-                  <RiskScoreBreakdown cohort={selectedCohort} />
-
                   <TrajectoryChart cohort={selectedCohort} />
+
+                  <RiskScoreBreakdown cohort={selectedCohort} />
                 </>
               )}
             </div>
