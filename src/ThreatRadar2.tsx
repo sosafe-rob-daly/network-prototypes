@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, ArrowRight, Mail, Clock, Shield, FileText, TrendingUp, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, Mail, Clock, Shield, FileText, TrendingUp, Sparkles, Users } from 'lucide-react';
 import ReactECharts from 'echarts-for-react';
 import Sidebar from './Sidebar';
 
@@ -453,10 +453,6 @@ const chartData = {
 
 const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThreat }) => {
   const [activeTab, setActiveTab] = useState<'network' | 'my-org'>('network');
-
-  const deployedCount = departments.filter(d => d.deployed).length;
-  const totalEmployees = departments.reduce((sum, d) => sum + d.employees, 0);
-  const deployedEmployees = departments.filter(d => d.deployed).reduce((sum, d) => sum + d.employees, 0);
 
   // Get threat-specific chart data
   const currentChartData = threatChartData[activeThreat?.id ?? 1] ?? threatChartData[1];
