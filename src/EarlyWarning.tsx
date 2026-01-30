@@ -405,12 +405,9 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
         isActive ? 'bg-gray-50 border-2 border-gray-300' : 'bg-gray-100 hover:bg-gray-50'
       }`}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h3 className="text-lg font-extrabold text-gray-900">{cohort.name}</h3>
-          <p className="text-xs text-gray-900 mt-1">{cohort.size} employees</p>
-        </div>
-        <RiskBadge level={cohort.riskLevel} />
+      <div className="mb-4">
+        <h3 className="text-lg font-extrabold text-gray-900">{cohort.name}</h3>
+        <p className="text-xs text-gray-900 mt-1">{cohort.size} employees</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
@@ -652,26 +649,20 @@ export default function EarlyWarning() {
           {/* Summary Stats */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-2.5 rounded-xl bg-white">
-                  <AlertTriangle size={20} className="text-gray-900" />
-                </div>
-                <span className="text-xs font-medium text-gray-900 bg-red-100 px-2 py-1 rounded-md">Critical</span>
+              <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
+                <AlertTriangle size={20} className="text-gray-900" />
               </div>
               <div className="text-3xl font-bold text-gray-900">{criticalCount}</div>
-              <div className="text-sm text-gray-600 mt-1">Critical Risk Cohorts</div>
+              <div className="text-sm font-bold text-gray-600 mt-1">Critical Risk Cohorts</div>
               <div className="text-xs text-gray-500 mt-1">Action needed within 3 days</div>
             </div>
 
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-2.5 rounded-xl bg-white">
-                  <TrendingUp size={20} className="text-gray-900" />
-                </div>
-                <span className="text-xs font-medium text-gray-900 bg-orange-100 px-2 py-1 rounded-md">High Risk</span>
+              <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
+                <TrendingUp size={20} className="text-gray-900" />
               </div>
               <div className="text-3xl font-bold text-gray-900">{highCount}</div>
-              <div className="text-sm text-gray-600 mt-1">High Risk Cohorts</div>
+              <div className="text-sm font-bold text-gray-600 mt-1">High Risk Cohorts</div>
               <div className="text-xs text-gray-500 mt-1">Action within 7-14 days</div>
             </div>
 
