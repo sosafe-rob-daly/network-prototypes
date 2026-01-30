@@ -105,9 +105,9 @@ const interventions: Intervention[] = [
 ];
 
 const MatchBadge: React.FC<{ score: number }> = ({ score }) => {
-  const color = score >= 90 ? 'bg-green-100 text-gray-900 border-green-200'
-    : score >= 80 ? 'bg-yellow-100 text-gray-900 border-yellow-200'
-    : 'bg-gray-100 text-gray-900 border-gray-200';
+  const color = score >= 90 ? 'bg-green-100 text-green-700 border-green-200'
+    : score >= 80 ? 'bg-yellow-100 text-yellow-700 border-yellow-200'
+    : 'bg-gray-100 text-gray-700 border-gray-200';
 
   return (
     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${color}`}>
@@ -118,9 +118,9 @@ const MatchBadge: React.FC<{ score: number }> = ({ score }) => {
 
 const ConfidenceBadge: React.FC<{ level: ConfidenceLevel }> = ({ level }) => {
   const config = {
-    high: { label: 'High Confidence', color: 'text-gray-900 bg-green-100 border-green-200' },
-    medium: { label: 'Medium Confidence', color: 'text-gray-900 bg-yellow-100 border-yellow-200' },
-    low: { label: 'Low Confidence', color: 'text-gray-900 bg-orange-100 border-orange-200' },
+    high: { label: 'High Confidence', color: 'text-green-700 bg-green-50 border-green-200' },
+    medium: { label: 'Medium Confidence', color: 'text-yellow-700 bg-yellow-50 border-yellow-200' },
+    low: { label: 'Low Confidence', color: 'text-orange-700 bg-orange-50 border-orange-200' },
   };
 
   const { label, color } = config[level];
@@ -150,13 +150,13 @@ const InterventionCard: React.FC<{ intervention: Intervention; isTop?: boolean }
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-3 flex-1">
           <div className="p-3 rounded-xl bg-gray-100">
-            <CategoryIcon size={24} className="text-gray-900" />
+            <CategoryIcon size={24} className="text-purple-600" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <h3 className="text-lg font-extrabold text-gray-900">{intervention.name}</h3>
               {isTop && (
-                <span className="text-xs font-bold text-gray-600 bg-gray-200 px-2 py-1 rounded-full">
+                <span className="text-xs font-bold text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
                   RECOMMENDED
                 </span>
               )}
@@ -260,113 +260,7 @@ const ProfileCard: React.FC<{ profile: OrgProfile }> = ({ profile }) => {
   );
 };
 
-// Benchmark Comparison Component
-const BenchmarkComparison: React.FC = () => {
-  const metrics = [
-    { label: 'Click Rate', you: 12.4, cohortAvg: 9.2, topQuartile: 5.1, unit: '%', better: 'lower' },
-    { label: 'Reporting Rate', you: 34, cohortAvg: 28, topQuartile: 52, unit: '%', better: 'higher' },
-    { label: 'Training Completion', you: 78, cohortAvg: 82, topQuartile: 94, unit: '%', better: 'higher' },
-  ];
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <h3 className="font-extrabold text-gray-900 mb-2">Network Benchmark</h3>
-      <p className="text-xs text-gray-900 mb-4">500-2000 employees, Financial Services, DACH region</p>
-
-      <div className="space-y-4">
-        {metrics.map((metric, idx) => {
-          const isGood = metric.better === 'lower'
-            ? metric.you < metric.cohortAvg
-            : metric.you > metric.cohortAvg;
-          return (
-            <div key={idx}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-bold text-gray-900">{metric.label}</span>
-                <span className="text-xs font-medium text-gray-900">
-                  {isGood ? '↑ Above avg' : '↓ Below avg'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 bg-gray-100 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${isGood ? 'bg-gray-400' : 'bg-gray-300'}`}
-                    style={{ width: `${Math.min((metric.you / metric.topQuartile) * 100, 100)}%` }}
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between mt-1 text-xs text-gray-900">
-                <span>You: <span className="font-bold">{metric.you}{metric.unit}</span></span>
-                <span>Avg: {metric.cohortAvg}{metric.unit}</span>
-                <span>Top: {metric.topQuartile}{metric.unit}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <p className="text-xs text-gray-900">
-          Organizations like yours who deployed the top playbook saw <span className="font-bold">+34% HSI improvement</span> on average.
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// Signal Chain Funnel Component
-const SignalChainFunnel: React.FC = () => {
-  const stages = [
-    { label: 'Sent', you: 1247, benchmark: 1200, trend: 'up' },
-    { label: 'Delivered', you: 1198, benchmark: 1150, trend: 'up' },
-    { label: 'Opened', you: 892, benchmark: 850, trend: 'up' },
-    { label: 'Reported', you: 312, benchmark: 238, trend: 'up', isPositive: true },
-    { label: 'Clicked', you: 156, benchmark: 132, trend: 'down', isNegative: true },
-    { label: 'Landed', you: 98, benchmark: 84, trend: 'down', isNegative: true },
-    { label: 'Data Entry', you: 23, benchmark: 31, trend: 'up' },
-  ];
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <h3 className="font-extrabold text-gray-900 mb-2">Signal Chain Analysis</h3>
-      <p className="text-xs text-gray-600 mb-4">Your phishing simulation funnel vs network</p>
-
-      <div className="space-y-3">
-        {stages.map((stage, idx) => {
-          const widthPercent = Math.max(20, 100 - (idx * 12));
-          return (
-            <div key={idx} className="flex items-center gap-3">
-              <div className="w-16 text-xs font-bold text-gray-900">{stage.label}</div>
-              <div className="flex-1">
-                <div
-                  className={`h-6 rounded-lg flex items-center justify-end px-2 ${
-                    stage.isPositive ? 'bg-green-100' : stage.isNegative ? 'bg-red-100' : 'bg-gray-100'
-                  }`}
-                  style={{ width: `${widthPercent}%` }}
-                >
-                  <span className="text-xs font-bold text-gray-900">{stage.you}</span>
-                </div>
-              </div>
-              <div className="w-12 text-xs text-gray-600 text-right">
-                <span className={stage.trend === 'up' ? 'text-green-600' : 'text-red-600'}>
-                  {stage.trend === 'up' ? '↑' : '↓'}
-                </span>
-                {' '}{stage.benchmark}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="mt-4 p-3 bg-teal-50 rounded-xl">
-        <p className="text-xs text-teal-800">
-          <span className="font-bold">Target intervention:</span> The recommended playbook specifically targets the <span className="font-bold">Clicked → Landed</span> conversion, where your cohort underperforms.
-        </p>
-      </div>
-    </div>
-  );
-};
-
-export default function Interventions() {
+export default function InterventionsOld() {
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -390,11 +284,11 @@ export default function Interventions() {
           {/* Summary Stats */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-white">
-                  <TrendingUp size={20} className="text-gray-900" />
+                  <TrendingUp size={20} className="text-green-600" />
                 </div>
-                <span className="text-xs font-medium text-gray-900 bg-green-100 px-2.5 py-1 rounded-full border border-green-200">
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-md">
                   Best Match
                 </span>
               </div>
@@ -405,7 +299,7 @@ export default function Interventions() {
 
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
-                <Clock size={20} className="text-gray-900" />
+                <Clock size={20} className="text-blue-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900">8 weeks</div>
               <div className="text-sm text-gray-600 mt-1">Fastest Impact</div>
@@ -414,7 +308,7 @@ export default function Interventions() {
 
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
-                <Users size={20} className="text-gray-900" />
+                <Users size={20} className="text-purple-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900">847</div>
               <div className="text-sm text-gray-600 mt-1">Similar Organizations</div>
@@ -423,7 +317,7 @@ export default function Interventions() {
 
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
-                <Target size={20} className="text-gray-900" />
+                <Target size={20} className="text-orange-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900">96%</div>
               <div className="text-sm text-gray-600 mt-1">Match Confidence</div>
@@ -453,13 +347,42 @@ export default function Interventions() {
             <div className="col-span-1 space-y-4">
               <ProfileCard profile={orgProfile} />
 
-              <BenchmarkComparison />
-
-              <SignalChainFunnel />
+              <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                <h3 className="font-extrabold text-gray-900 mb-4">How It Works</h3>
+                <div className="space-y-3">
+                  <div className="flex gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gray-100 text-gray-900 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      1
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-gray-900">Profile Matching</div>
+                      <div className="text-xs text-gray-900 mt-1">We analyze organizations similar to yours across size, industry, and maturity</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gray-100 text-gray-900 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      2
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-gray-900">Outcome Analysis</div>
+                      <div className="text-xs text-gray-900 mt-1">Track what interventions drove measurable HSI improvements</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gray-100 text-gray-900 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      3
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-gray-900">Personalized Ranking</div>
+                      <div className="text-xs text-gray-900 mt-1">Surface interventions with proven track records in your cohort</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div className="bg-gray-100 rounded-2xl p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle size={18} className="text-gray-900" />
+                  <CheckCircle size={18} className="text-green-600" />
                   <h3 className="font-extrabold text-gray-900">Success Story</h3>
                 </div>
                 <p className="text-xs text-gray-900 mb-3">

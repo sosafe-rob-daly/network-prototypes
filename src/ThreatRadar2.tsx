@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, Mail, Clock, Shield, FileText, TrendingUp, Sparkles, Users } from 'lucide-react';
 import ReactECharts from 'echarts-for-react';
 import Sidebar from './Sidebar';
 
 // Import stat card icons
 import activeThreatsIcon from '../Assets/Active_Threats.png';
 import orgsProtectedIcon from '../Assets/Orgs_Protected.png';
-import avgResponseTimeIcon from '../Assets/Avg._Response_Time.png';
 import attacksPreventedIcon from '../Assets/Attacks_Prevented.png';
 import recreateBetaImage from '../Assets/Recreate_Beta.png';
 import reportImage from '../Assets/Report.png';
+import docusignLogo from '../Assets/Docusign.png';
+import m365Logo from '../Assets/M365.png';
+import paypalLogo from '../Assets/PayPal.png';
 
 // Type definitions
 type ThreatSeverity = 'critical' | 'high' | 'medium';
@@ -63,7 +65,7 @@ const initialThreats: Threat[] = [
     type: 'Phishing',
     severity: 'critical',
     detectedAt: 'Frankfurt, DE',
-    detectedTime: '14 min ago',
+    detectedTime: '1 week ago',
     affectedOrgs: 1,
     protectedOrgs: 8431,
     status: 'propagating',
@@ -76,7 +78,7 @@ const initialThreats: Threat[] = [
     type: 'Credential Theft',
     severity: 'high',
     detectedAt: 'London, UK',
-    detectedTime: '2 hours ago',
+    detectedTime: '2 weeks ago',
     affectedOrgs: 3,
     protectedOrgs: 892,
     status: 'contained',
@@ -89,7 +91,7 @@ const initialThreats: Threat[] = [
     type: 'BEC',
     severity: 'medium',
     detectedAt: 'Munich, DE',
-    detectedTime: '4 hours ago',
+    detectedTime: '4 weeks ago',
     affectedOrgs: 1,
     protectedOrgs: 1205,
     status: 'contained',
@@ -101,24 +103,156 @@ const initialThreats: Threat[] = [
 // Timeline data for each threat
 const threatTimelines: Record<number, { time: string; title: string; description: string; color: string }[]> = {
   1: [
-    { time: '14:32 CET', title: 'Threat Detected', description: 'Novel DocuSign template identified at Deutsche Bank AG', color: 'bg-red-500' },
-    { time: '14:33 CET', title: 'Pattern Analyzed', description: 'AI classified as credential harvest with 94% confidence', color: 'bg-orange-500' },
-    { time: '14:34 CET', title: 'Network Alert', description: 'Pushed to 8,431 organizations in Finance vertical', color: 'bg-yellow-500' },
-    { time: '14:36 CET', title: 'Simulations Deployed', description: 'Proactive training triggered for high-risk cohorts', color: 'bg-green-500' },
+    { time: 'Jan 23, 14:32', title: 'Threat Detected', description: 'Novel DocuSign template identified at Deutsche Bank AG', color: 'bg-red-500' },
+    { time: 'Jan 23, 14:33', title: 'Pattern Analyzed', description: 'AI classified as credential harvest with 94% confidence', color: 'bg-orange-500' },
+    { time: 'Jan 23, 14:34', title: 'Network Alert', description: 'Pushed to 8,431 organizations in Finance vertical', color: 'bg-yellow-500' },
+    { time: 'Jan 23, 14:36', title: 'Simulations Deployed', description: 'Proactive training triggered for high-risk cohorts', color: 'bg-green-500' },
   ],
   2: [
-    { time: '10:15 CET', title: 'Threat Detected', description: 'MFA bypass attempt flagged at Barclays UK', color: 'bg-red-500' },
-    { time: '10:17 CET', title: 'Pattern Analyzed', description: 'AI identified session token theft technique', color: 'bg-orange-500' },
-    { time: '10:19 CET', title: 'Network Alert', description: 'Pushed to 892 organizations using M365', color: 'bg-yellow-500' },
-    { time: '10:22 CET', title: 'Threat Contained', description: 'All affected sessions invalidated across network', color: 'bg-green-500' },
+    { time: 'Jan 16, 10:15', title: 'Threat Detected', description: 'MFA bypass attempt flagged at Barclays UK', color: 'bg-red-500' },
+    { time: 'Jan 16, 10:17', title: 'Pattern Analyzed', description: 'AI identified session token theft technique', color: 'bg-orange-500' },
+    { time: 'Jan 16, 10:19', title: 'Network Alert', description: 'Pushed to 892 organizations using M365', color: 'bg-yellow-500' },
+    { time: 'Jan 16, 10:22', title: 'Threat Contained', description: 'All affected sessions invalidated across network', color: 'bg-green-500' },
   ],
   3: [
-    { time: '08:45 CET', title: 'Threat Detected', description: 'Suspicious PayPal invoice reported at BMW Group', color: 'bg-red-500' },
-    { time: '08:47 CET', title: 'Pattern Analyzed', description: 'AI matched to known BEC campaign with 89% confidence', color: 'bg-orange-500' },
-    { time: '08:49 CET', title: 'Network Alert', description: 'Pushed to 1,205 organizations in Automotive vertical', color: 'bg-yellow-500' },
-    { time: '08:52 CET', title: 'Threat Contained', description: 'Email filters updated, simulation deployed', color: 'bg-green-500' },
+    { time: 'Jan 2, 08:45', title: 'Threat Detected', description: 'Suspicious PayPal invoice reported at BMW Group', color: 'bg-red-500' },
+    { time: 'Jan 2, 08:47', title: 'Pattern Analyzed', description: 'AI matched to known BEC campaign with 89% confidence', color: 'bg-orange-500' },
+    { time: 'Jan 2, 08:49', title: 'Network Alert', description: 'Pushed to 1,205 organizations in Automotive vertical', color: 'bg-yellow-500' },
+    { time: 'Jan 2, 08:52', title: 'Threat Contained', description: 'Email filters updated, simulation deployed', color: 'bg-green-500' },
   ],
 };
+
+// Reported Threat Feed data (PRB reports from across network)
+type ReportStatus = 'analyzing' | 'confirmed' | 'pushed';
+
+interface ReportedThreat {
+  id: number;
+  orgType: string;
+  orgSize: string;
+  threatType: string;
+  trustScore: number;
+  timeAgo: string;
+  status: ReportStatus;
+  confirmedBy?: number;
+}
+
+const reportedThreats: ReportedThreat[] = [
+  {
+    id: 1,
+    orgType: 'Financial Services',
+    orgSize: '2000+ employees',
+    threatType: 'Credential Harvest',
+    trustScore: 94,
+    timeAgo: '2 min ago',
+    status: 'pushed',
+    confirmedBy: 12,
+  },
+  {
+    id: 2,
+    orgType: 'Healthcare',
+    orgSize: '500-2000 employees',
+    threatType: 'Invoice Fraud',
+    trustScore: 87,
+    timeAgo: '8 min ago',
+    status: 'confirmed',
+    confirmedBy: 7,
+  },
+  {
+    id: 3,
+    orgType: 'Manufacturing',
+    orgSize: '2000+ employees',
+    threatType: 'Spear Phishing',
+    trustScore: 72,
+    timeAgo: '14 min ago',
+    status: 'analyzing',
+  },
+  {
+    id: 4,
+    orgType: 'Technology',
+    orgSize: '500-2000 employees',
+    threatType: 'MFA Bypass',
+    trustScore: 91,
+    timeAgo: '23 min ago',
+    status: 'pushed',
+    confirmedBy: 19,
+  },
+  {
+    id: 5,
+    orgType: 'Retail',
+    orgSize: '200-500 employees',
+    threatType: 'Brand Impersonation',
+    trustScore: 68,
+    timeAgo: '31 min ago',
+    status: 'confirmed',
+    confirmedBy: 4,
+  },
+];
+
+// Template Intelligence data
+interface SimulationTemplate {
+  id: number;
+  name: string;
+  logo?: string;
+  previewColor?: string;
+  source: string;
+  sourceTime: string;
+  adoption: number;
+  avgClickRate: number;
+  difficulty: number;
+  isNetworkPowered: boolean;
+  status: 'new' | 'updated' | 'active';
+}
+
+const simulationTemplates: SimulationTemplate[] = [
+  {
+    id: 1,
+    name: 'DocuSign Credential Harvest',
+    logo: docusignLogo,
+    source: 'Derived from network threat',
+    sourceTime: '3 days ago',
+    adoption: 1247,
+    avgClickRate: 23.4,
+    difficulty: 4,
+    isNetworkPowered: true,
+    status: 'new',
+  },
+  {
+    id: 2,
+    name: 'Microsoft 365 MFA Request',
+    logo: m365Logo,
+    source: 'Derived from network threat',
+    sourceTime: '5 days ago',
+    adoption: 892,
+    avgClickRate: 18.7,
+    difficulty: 3,
+    isNetworkPowered: true,
+    status: 'updated',
+  },
+  {
+    id: 3,
+    name: 'PayPal Invoice Notification',
+    logo: paypalLogo,
+    source: 'Derived from network threat',
+    sourceTime: '1 week ago',
+    adoption: 2341,
+    avgClickRate: 12.1,
+    difficulty: 2,
+    isNetworkPowered: true,
+    status: 'active',
+  },
+  {
+    id: 4,
+    name: 'IT Password Reset Request',
+    previewColor: 'from-purple-500 to-pink-500',
+    source: 'Standard template library',
+    sourceTime: '2 weeks ago',
+    adoption: 4521,
+    avgClickRate: 15.3,
+    difficulty: 3,
+    isNetworkPowered: false,
+    status: 'active',
+  },
+];
 
 
 const StatCard: React.FC<StatCardProps> = ({ iconSrc, label, value, subvalue, trend }) => {
@@ -127,7 +261,7 @@ const StatCard: React.FC<StatCardProps> = ({ iconSrc, label, value, subvalue, tr
       <div className="flex items-center justify-between mb-3">
         <img src={iconSrc} alt={label} className="w-8 h-8" />
         {trend && (
-          <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-md">
+          <span className="text-xs font-medium text-gray-900 bg-green-100 px-2 py-1 rounded-md border border-green-200">
             {trend}
           </span>
         )}
@@ -313,7 +447,7 @@ const threatChartData: Record<number, {
 
 // Static chart data - shared across all threats
 const chartData = {
-  months: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+  weeks: ['Jan 2', 'Jan 9', 'Jan 16', 'Jan 23', 'Jan 30'],
   xAxisData: Array.from({ length: 100 }, (_, i) => i),
 };
 
@@ -344,11 +478,11 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
       axisTick: { show: false },
       axisLabel: {
         show: true,
-        interval: 16, // Show label every ~17 points (6 labels for 100 points)
+        interval: 19, // Show label every ~20 points (5 labels for 100 points)
         formatter: (_value: string, index: number) => {
-          const months = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
-          const monthIndex = Math.floor(index / 17);
-          return months[Math.min(monthIndex, 5)] || '';
+          const weeks = ['Jan 2', 'Jan 9', 'Jan 16', 'Jan 23', 'Jan 30'];
+          const weekIndex = Math.floor(index / 20);
+          return weeks[Math.min(weekIndex, 4)] || '';
         },
         color: '#878E96',
         fontSize: 10,
@@ -470,20 +604,9 @@ const NetworkVisualization: React.FC<NetworkVisualizationProps> = ({ activeThrea
           <ReactECharts option={getChartOption()} style={{ height: '100%', width: '100%' }} opts={{ renderer: 'svg' }} />
         </div>
       ) : (
-        <div style={{ height: '300px' }}>
-          {/* My Organization View */}
-          <div className="mb-4 p-4 bg-gray-100 rounded-2xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-bold text-gray-900">Forrester Research Inc.</div>
-                <div className="text-xs text-gray-900 mt-0.5">{deployedCount} of {departments.length} departments protected • {deployedEmployees} of {totalEmployees} employees</div>
-              </div>
-              <CheckCircle size={20} className="text-green-500" />
-            </div>
-          </div>
-
-          {/* Department List */}
-          <div className="space-y-2 max-h-48 overflow-y-auto">
+        <div style={{ height: '300px' }} className="border border-gray-200 rounded-xl p-2">
+          {/* My Organization View - Department List */}
+          <div className="space-y-2 h-full overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full">
             {departments.map((dept) => (
               <div
                 key={dept.id}
@@ -532,6 +655,221 @@ const TimelineEvent: React.FC<TimelineEventProps & { color?: string }> = ({ time
     </div>
   </div>
 );
+
+// Reported Threat Feed Component
+const ReportedThreatFeed: React.FC = () => {
+  const [threats, setThreats] = useState(reportedThreats);
+  const [newItemId, setNewItemId] = useState<number | null>(null);
+
+  const statusConfig: Record<ReportStatus, { label: string; color: string }> = {
+    analyzing: { label: 'Analyzing', color: 'bg-gray-200 text-gray-600' },
+    confirmed: { label: 'Confirmed', color: 'bg-gray-200 text-gray-600' },
+    pushed: { label: 'Alert Pushed', color: 'bg-gray-200 text-gray-600' },
+  };
+
+  // Cycle threats every 10 seconds - move last item to top with fresh timestamp
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setThreats(prev => {
+        const lastItem = prev[prev.length - 1];
+        const updatedItem = {
+          ...lastItem,
+          id: Date.now(), // New unique ID for animation key
+          timeAgo: 'Just now',
+          status: 'analyzing' as ReportStatus, // New items start as analyzing
+          confirmedBy: undefined,
+        };
+        setNewItemId(updatedItem.id);
+        return [updatedItem, ...prev.slice(0, -1)];
+      });
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Clear new item highlight after animation
+  useEffect(() => {
+    if (newItemId) {
+      const timeout = setTimeout(() => setNewItemId(null), 800);
+      return () => clearTimeout(timeout);
+    }
+  }, [newItemId]);
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-extrabold text-gray-900">Threat Report Feed</h3>
+          <p className="text-xs text-gray-900 mt-0.5">Real-time PRB reports from across the network</p>
+        </div>
+        <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg">
+          <Mail size={14} className="text-gray-600" />
+          <span className="text-sm font-bold text-gray-900">247</span>
+          <span className="text-xs text-gray-600">reports/hour</span>
+        </div>
+      </div>
+
+      <div className="border border-gray-200 rounded-xl p-2">
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+        {threats.map((report) => {
+          const status = statusConfig[report.status];
+          const isNew = report.id === newItemId;
+          return (
+            <div
+              key={report.id}
+              className={`rounded-xl p-4 transition-all duration-300 ${
+                isNew ? 'bg-purple-50' : 'bg-gray-100'
+              }`}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <div className="text-sm font-bold text-gray-900">{report.threatType}</div>
+                  <div className="text-xs text-gray-600 mt-0.5">
+                    {report.orgType}, {report.orgSize}
+                  </div>
+                </div>
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${status.color}`}>
+                  {status.label}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Shield size={12} className="text-gray-500" />
+                    <span className="text-xs text-gray-900">
+                      Trust: <span className="font-bold">{report.trustScore}%</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock size={12} className="text-gray-500" />
+                    <span className="text-xs text-gray-600">{report.timeAgo}</span>
+                  </div>
+                </div>
+                {report.confirmedBy && (
+                  <div className="text-xs text-gray-600 font-medium">
+                    Confirmed by {report.confirmedBy} orgs
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        </div>
+      </div>
+
+      <div className="mt-2 pt-2 flex items-center justify-between">
+        <div className="text-xs text-gray-600">
+          <span className="font-bold text-gray-900">1,247</span> reports analyzed in last 24h
+        </div>
+        <button className="text-xs font-bold text-gray-900 hover:underline">
+          View all reports →
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Template Intelligence Panel Component
+const TemplateIntelligencePanel: React.FC = () => {
+  const networkPoweredCount = simulationTemplates.filter(t => t.isNetworkPowered).length;
+  const newThisWeek = simulationTemplates.filter(t => t.status === 'new' || t.status === 'updated').length;
+
+  const statusConfig = {
+    new: { label: 'New', color: 'bg-gray-200 text-gray-600' },
+    updated: { label: 'Updated', color: 'bg-gray-200 text-gray-600' },
+    active: { label: 'Active', color: 'bg-gray-200 text-gray-600' },
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-extrabold text-gray-900">Template Intelligence</h3>
+          <p className="text-xs text-gray-900 mt-0.5">Simulation templates informed by network threat data</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-purple-50 px-3 py-1.5 rounded-lg">
+            <Sparkles size={14} className="text-gray-900" />
+            <span className="text-sm font-bold text-gray-900">{newThisWeek}</span>
+            <span className="text-xs text-gray-900">updated this week</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {simulationTemplates.map((template) => (
+          <div
+            key={template.id}
+            className="bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-gray-200 transition-all"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              {/* Template preview thumbnail */}
+              {template.logo ? (
+                <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <img src={template.logo} alt={template.name} className="w-10 h-10 object-contain" />
+                </div>
+              ) : (
+                <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${template.previewColor} flex items-center justify-center flex-shrink-0`}>
+                  <FileText size={20} className="text-white" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-semibold text-gray-900 text-sm truncate">{template.name}</h4>
+                  {template.isNetworkPowered && (
+                    <span className="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded font-medium flex-shrink-0">
+                      Network-Powered
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs px-1.5 py-0.5 rounded ${statusConfig[template.status].color}`}>
+                    {statusConfig[template.status].label}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-xs text-gray-600 mb-3">
+              {template.source} <span className="text-gray-400">·</span> {template.sourceTime}
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-white rounded-lg p-2">
+                <div className="flex items-center justify-center gap-1">
+                  <Users size={12} className="text-gray-400" />
+                  <span className="text-sm font-bold text-gray-900">{template.adoption.toLocaleString()}</span>
+                </div>
+                <div className="text-xs text-gray-500">orgs active</div>
+              </div>
+              <div className="bg-white rounded-lg p-2">
+                <div className="flex items-center justify-center gap-1">
+                  <TrendingUp size={12} className="text-gray-400" />
+                  <span className="text-sm font-bold text-gray-900">{template.avgClickRate}%</span>
+                </div>
+                <div className="text-xs text-gray-500">click rate</div>
+              </div>
+              <div className="bg-white rounded-lg p-2">
+                <div className="text-sm font-bold text-gray-900">D{template.difficulty}</div>
+                <div className="text-xs text-gray-500">difficulty</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <Shield size={14} />
+          <span><span className="font-bold text-gray-900">{networkPoweredCount}</span> templates derived from real network threats</span>
+        </div>
+        <button className="text-xs font-bold text-gray-900 hover:underline">
+          View template library →
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default function ThreatRadar2() {
   const [activeThreat, setActiveThreat] = useState<Threat | null>(initialThreats[0]);
@@ -596,21 +934,36 @@ export default function ThreatRadar2() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-5 gap-4 mb-6">
           <StatCard
             iconSrc={activeThreatsIcon}
             label="Active threats"
             value="3"
           />
+          <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2.5 rounded-full bg-white">
+                <Mail size={20} className="text-gray-900" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-gray-900 mb-1">1,247</div>
+            <div className="text-sm text-gray-600">Network Reports</div>
+            <div className="text-xs text-gray-500 mt-1">Last 24 hours</div>
+          </div>
+          <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2.5 rounded-full bg-white">
+                <Clock size={20} className="text-gray-900" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-gray-900 mb-1">2.3 min</div>
+            <div className="text-sm text-gray-600">Avg. Triage Time</div>
+            <div className="text-xs text-gray-500 mt-1">Mail Triage</div>
+          </div>
           <StatCard
             iconSrc={orgsProtectedIcon}
             label="Organizations Protected"
             value={protectedCount.toLocaleString()}
-          />
-          <StatCard
-            iconSrc={avgResponseTimeIcon}
-            label="Avg. Response Time"
-            value="4.2 min"
           />
           <StatCard
             iconSrc={attacksPreventedIcon}
@@ -619,70 +972,80 @@ export default function ThreatRadar2() {
           />
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-3 gap-6">
-          {/* Threat List */}
-          <div className="col-span-1">
-            <div className="bg-white rounded-2xl border border-gray-200 p-6">
-              <div className="mb-4">
-                <h2 className="text-lg font-extrabold text-gray-900">Active threats</h2>
-                <p className="text-xs text-gray-900 mt-0.5">Click to view propagation</p>
-              </div>
-              <div className="space-y-3">
-                {initialThreats.map((threat) => (
-                  <ThreatCard
-                    key={threat.id}
-                    threat={threat}
-                    isActive={activeThreat?.id === threat.id}
-                    onClick={() => setActiveThreat(threat)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Network Visualization */}
-          <div className="col-span-2 space-y-4">
-            <NetworkVisualization activeThreat={activeThreat} />
-
-            {/* Timeline & Action */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100 p-6">
-                <h3 className="text-lg font-extrabold text-gray-900 mb-4">Propagation Timeline</h3>
-                <div className="space-y-1">
-                  {(threatTimelines[activeThreat?.id ?? 1] ?? threatTimelines[1]).map((event, index, arr) => (
-                    <TimelineEvent
-                      key={index}
-                      time={event.time}
-                      title={event.title}
-                      description={event.description}
-                      color={event.color}
-                      isLast={index === arr.length - 1}
+        {/* Main Content - Connected Information Group */}
+        <div className="bg-gray-50 rounded-3xl border border-gray-200 p-6">
+          <div className="grid grid-cols-3 gap-6">
+            {/* Row 1: Active threats + Network Visualization */}
+            <div className="col-span-1">
+              <div className="bg-white rounded-2xl border border-gray-200 p-6 h-full">
+                <div className="mb-4">
+                  <h2 className="text-lg font-extrabold text-gray-900">Active threats</h2>
+                  <p className="text-xs text-gray-900 mt-0.5">Click to view propagation</p>
+                </div>
+                <div className="space-y-3">
+                  {initialThreats.map((threat) => (
+                    <ThreatCard
+                      key={threat.id}
+                      threat={threat}
+                      isActive={activeThreat?.id === threat.id}
+                      onClick={() => setActiveThreat(threat)}
                     />
                   ))}
                 </div>
               </div>
+            </div>
+            <div className="col-span-2">
+              <NetworkVisualization activeThreat={activeThreat} />
+            </div>
 
-              <div className="bg-gray-100 rounded-2xl p-6">
-                <h3 className="font-extrabold text-lg text-gray-900">Collective Intelligence</h3>
-                <p className="text-xs text-gray-900 mt-2">
-                  Every SoSafe customer makes every other customer more secure. This threat is now being simulated across {activeThreat?.protectedOrgs?.toLocaleString() ?? '0'} organizations.
-                </p>
-                <div className="mt-6 pt-4 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-2xl font-bold text-gray-900">4 min</div>
-                      <div className="text-xs text-gray-900">Detection → Defense</div>
+            {/* Row 2: Threat Report Feed + Timeline/Collective Intelligence */}
+            <div className="col-span-1">
+              <ReportedThreatFeed />
+            </div>
+            <div className="col-span-2">
+              <div className="grid grid-cols-2 gap-4 h-full">
+                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                  <h3 className="text-lg font-extrabold text-gray-900 mb-4">Propagation Timeline</h3>
+                  <div className="space-y-1">
+                    {(threatTimelines[activeThreat?.id ?? 1] ?? threatTimelines[1]).map((event, index, arr) => (
+                      <TimelineEvent
+                        key={index}
+                        time={event.time}
+                        title={event.title}
+                        description={event.description}
+                        color={event.color}
+                        isLast={index === arr.length - 1}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                  <h3 className="font-extrabold text-lg text-gray-900">Collective Intelligence</h3>
+                  <p className="text-xs text-gray-900 mt-2">
+                    Every SoSafe customer makes every other customer more secure. This threat is now being simulated across {activeThreat?.protectedOrgs?.toLocaleString() ?? '0'} organizations.
+                  </p>
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-2xl font-bold text-gray-900">4 min</div>
+                        <div className="text-xs text-gray-900">Detection → Defense</div>
+                      </div>
+                      <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
+                        View Details
+                        <ArrowRight size={16} />
+                      </button>
                     </div>
-                    <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
-                      View Details
-                      <ArrowRight size={16} />
-                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Template Intelligence Section */}
+        <div className="mt-6">
+          <TemplateIntelligencePanel />
         </div>
         </div>
       </div>

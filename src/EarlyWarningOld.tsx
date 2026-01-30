@@ -1,23 +1,10 @@
 import React, { useState } from 'react';
-import { AlertTriangle, TrendingUp, Clock, Zap, Target, Shield, ChevronRight, Activity, Gauge, TrendingDown, Info } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Clock, Zap, Target, Shield, ChevronRight, Activity } from 'lucide-react';
 import Sidebar from './Sidebar';
 
 // Type definitions
 type RiskLevel = 'critical' | 'high' | 'medium' | 'low';
 type CohortType = 'department' | 'role' | 'custom';
-
-interface RiskScoreData {
-  composite: number;
-  behavioral: number;
-  patternMatch: number;
-  impactFactor: number;
-  trend: number;
-  impactExplanation: {
-    accessDescription: string;
-    avgBreachCost: string;
-    multiplier: string;
-  };
-}
 
 interface RiskCohort {
   id: number;
@@ -39,7 +26,6 @@ interface RiskCohort {
     urgency: string;
     estimatedImpact: string;
   };
-  riskScore: RiskScoreData;
 }
 
 interface TrajectoryPoint {
@@ -69,18 +55,6 @@ const cohorts: RiskCohort[] = [
       urgency: 'Deploy this week',
       estimatedImpact: '+18% HSI in 2 weeks',
     },
-    riskScore: {
-      composite: 78,
-      behavioral: 58,
-      patternMatch: 94,
-      impactFactor: 3.2,
-      trend: -12,
-      impactExplanation: {
-        accessDescription: 'Finance team has access to payment systems and bank accounts',
-        avgBreachCost: '$2.4M',
-        multiplier: '3.2x the organization average',
-      },
-    },
   },
   {
     id: 2,
@@ -101,18 +75,6 @@ const cohorts: RiskCohort[] = [
       action: 'Executive Security Briefing + MFA Enforcement',
       urgency: 'Deploy within 7 days',
       estimatedImpact: '+22% HSI in 3 weeks',
-    },
-    riskScore: {
-      composite: 71,
-      behavioral: 64,
-      patternMatch: 87,
-      impactFactor: 4.8,
-      trend: -8,
-      impactExplanation: {
-        accessDescription: 'Executive access to sensitive strategic data and approval workflows',
-        avgBreachCost: '$3.6M',
-        multiplier: '4.8x the organization average',
-      },
     },
   },
   {
@@ -135,18 +97,6 @@ const cohorts: RiskCohort[] = [
       urgency: 'Deploy within 10 days',
       estimatedImpact: '+15% HSI in 4 weeks',
     },
-    riskScore: {
-      composite: 64,
-      behavioral: 52,
-      patternMatch: 76,
-      impactFactor: 1.4,
-      trend: -6,
-      impactExplanation: {
-        accessDescription: 'Variable access based on role; unfamiliar with security policies',
-        avgBreachCost: '$890K',
-        multiplier: '1.4x the organization average',
-      },
-    },
   },
   {
     id: 4,
@@ -167,18 +117,6 @@ const cohorts: RiskCohort[] = [
       action: 'Data Handling Refresher + Monitoring',
       urgency: 'Deploy within 2 weeks',
       estimatedImpact: '+10% HSI in 3 weeks',
-    },
-    riskScore: {
-      composite: 52,
-      behavioral: 71,
-      patternMatch: 67,
-      impactFactor: 2.1,
-      trend: -3,
-      impactExplanation: {
-        accessDescription: 'HR access to employee PII and sensitive personnel records',
-        avgBreachCost: '$1.6M',
-        multiplier: '2.1x the organization average',
-      },
     },
   },
 ];
@@ -239,10 +177,10 @@ const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], pred
 
 const RiskBadge: React.FC<{ level: RiskLevel }> = ({ level }) => {
   const config = {
-    critical: { label: 'Critical Risk', color: 'text-gray-900 bg-amber-100 border-amber-200', icon: '⚠️' },
-    high: { label: 'High Risk', color: 'text-gray-900 bg-orange-100 border-orange-200', icon: '●' },
-    medium: { label: 'Medium Risk', color: 'text-gray-900 bg-yellow-100 border-yellow-200', icon: '●' },
-    low: { label: 'Low Risk', color: 'text-gray-900 bg-green-100 border-green-200', icon: '●' },
+    critical: { label: 'Critical Risk', color: 'text-red-700 bg-red-50 border-red-300', icon: '🔴' },
+    high: { label: 'High Risk', color: 'text-orange-700 bg-orange-50 border-orange-300', icon: '🟠' },
+    medium: { label: 'Medium Risk', color: 'text-yellow-700 bg-yellow-50 border-yellow-300', icon: '🟡' },
+    low: { label: 'Low Risk', color: 'text-green-700 bg-green-50 border-green-300', icon: '🟢' },
   };
 
   const { label, color, icon } = config[level];
@@ -269,124 +207,8 @@ const UrgencyCountdown: React.FC<{ days: number; riskLevel: RiskLevel }> = ({ da
   );
 };
 
-const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
-  const { riskScore } = cohort;
-
-  const getScoreColor = (score: number) => {
-    if (score >= 70) return 'text-amber-600';
-    if (score >= 50) return 'text-orange-500';
-    return 'text-yellow-600';
-  };
-
-  const getScoreBgColor = (score: number) => {
-    if (score >= 70) return 'bg-amber-500';
-    if (score >= 50) return 'bg-orange-400';
-    return 'bg-yellow-400';
-  };
-
-  const getScoreLabel = (score: number) => {
-    if (score >= 70) return 'Critical';
-    if (score >= 50) return 'High';
-    if (score >= 30) return 'Medium';
-    return 'Low';
-  };
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Gauge size={20} className="text-gray-900" />
-        <h3 className="text-lg font-extrabold text-gray-900">Enhanced Risk Scoring</h3>
-        <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full font-medium ml-auto">Network-Powered</span>
-      </div>
-
-      {/* Composite Score */}
-      <div className="bg-gray-100 rounded-xl p-5 mb-5">
-        <div className="flex items-center justify-between mb-3">
-          <div className="text-sm font-medium text-gray-600">Composite Risk Score</div>
-          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-            riskScore.composite >= 70 ? 'bg-amber-100 text-gray-900' :
-            riskScore.composite >= 50 ? 'bg-orange-100 text-gray-900' : 'bg-yellow-100 text-gray-900'
-          }`}>
-            {getScoreLabel(riskScore.composite)}
-          </span>
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className={`text-5xl font-black ${getScoreColor(riskScore.composite)}`}>{riskScore.composite}</span>
-          <span className="text-xl text-gray-400">/100</span>
-        </div>
-        <div className="mt-3 h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className={`h-full ${getScoreBgColor(riskScore.composite)} transition-all`}
-            style={{ width: `${riskScore.composite}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Score Breakdown */}
-      <div className="grid grid-cols-2 gap-4 mb-5">
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="text-xs text-gray-500 mb-1">Behavioral Score</div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-gray-900">{riskScore.behavioral}</span>
-            <span className="text-sm text-gray-400">/100</span>
-          </div>
-          <div className="text-xs text-gray-500 mt-1">HSI, click rate, reporting</div>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="text-xs text-gray-500 mb-1">Pattern Match</div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-gray-900">{riskScore.patternMatch}%</span>
-          </div>
-          <div className="text-xs text-gray-500 mt-1">Similarity to pre-incident</div>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="text-xs text-gray-500 mb-1">Impact Factor</div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-purple-600">{riskScore.impactFactor}x</span>
-          </div>
-          <div className="text-xs text-gray-500 mt-1">Role & access multiplier</div>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-4">
-          <div className="text-xs text-gray-500 mb-1">30-Day Trend</div>
-          <div className="flex items-center gap-1">
-            <TrendingDown size={18} className="text-amber-600" />
-            <span className="text-2xl font-bold text-amber-600">{Math.abs(riskScore.trend)}%</span>
-          </div>
-          <div className="text-xs text-gray-500 mt-1">Declining performance</div>
-        </div>
-      </div>
-
-      {/* Impact Factor Explanation */}
-      <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-        <div className="flex items-start gap-3">
-          <Info size={18} className="text-gray-900 mt-0.5 flex-shrink-0" />
-          <div>
-            <div className="font-semibold text-purple-900 mb-2">Why Impact Factor is {riskScore.impactFactor}x</div>
-            <div className="text-xs text-purple-800 space-y-1.5">
-              <p>• {riskScore.impactExplanation.accessDescription}</p>
-              <p>• Average breach cost for this cohort: <strong>{riskScore.impactExplanation.avgBreachCost}</strong></p>
-              <p>• This is <strong>{riskScore.impactExplanation.multiplier}</strong></p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Network Context */}
-      <div className="mt-4 pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <Shield size={14} />
-          <span>Risk scoring model trained on <strong className="text-gray-700">5,284 incidents</strong> across <strong className="text-gray-700">2,847 organizations</strong></span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: boolean }> = ({ cohort, onClick, isActive }) => {
-  const trendColor = cohort.trend < -10 ? 'text-amber-600' : cohort.trend < -5 ? 'text-orange-500' : 'text-yellow-600';
+  const trendColor = cohort.trend < -10 ? 'text-red-600' : cohort.trend < -5 ? 'text-orange-600' : 'text-yellow-600';
   const trendIcon = cohort.trend < 0 ? '↓' : '↑';
 
   return (
@@ -419,7 +241,7 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
 
       <div className="bg-white rounded-lg p-3 mb-4">
         <div className="flex items-start gap-2">
-          <AlertTriangle size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
+          <AlertTriangle size={16} className="text-red-600 mt-0.5 flex-shrink-0" />
           <div>
             <div className="text-xs font-bold text-gray-900 mb-1">
               Pattern Match: {cohort.matchedPattern.name}
@@ -472,7 +294,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
               ))}
             </div>
 
-            {/* Network pattern (historical incidents) - amber dashed */}
+            {/* Network pattern (historical incidents) - red dashed */}
             <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
               <polyline
                 points={data.network.map((p) => {
@@ -481,10 +303,10 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                   return `${x}%,${y}%`;
                 }).join(' ')}
                 fill="none"
-                stroke="#d97706"
+                stroke="#ef4444"
                 strokeWidth="3"
                 strokeDasharray="8,4"
-                opacity="0.7"
+                opacity="0.6"
               />
               {data.network.map((p, idx) => (
                 <g key={idx}>
@@ -492,15 +314,15 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
                     cx={`${((p.week + 8) / 12) * 100}%`}
                     cy={`${100 - p.hsi}%`}
                     r="4"
-                    fill="#d97706"
-                    opacity="0.9"
+                    fill="#ef4444"
+                    opacity="0.8"
                   />
                   {p.label && (
                     <text
                       x={`${((p.week + 8) / 12) * 100}%`}
                       y={`${100 - p.hsi - 8}%`}
                       textAnchor="middle"
-                      className="text-xs font-semibold fill-amber-600"
+                      className="text-xs font-semibold fill-red-600"
                     >
                       {p.label}
                     </text>
@@ -584,7 +406,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
           <span className="text-gray-900">Predicted</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-amber-500 opacity-70" style={{ borderTop: '3px dashed' }} />
+          <div className="w-8 h-0.5 bg-red-500 opacity-60" style={{ borderTop: '3px dashed' }} />
           <span className="text-gray-900">Network incident pattern</span>
         </div>
       </div>
@@ -607,7 +429,7 @@ const TrajectoryChart: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   );
 };
 
-export default function EarlyWarning() {
+export default function EarlyWarningOld() {
   const [selectedCohort, setSelectedCohort] = useState<RiskCohort | null>(cohorts[0]);
 
   const criticalCount = cohorts.filter(c => c.riskLevel === 'critical').length;
@@ -636,9 +458,9 @@ export default function EarlyWarning() {
             <div className="flex items-center gap-3">
               <div className="text-right">
                 <div className="text-xs text-gray-600">Active Alerts</div>
-                <div className="text-2xl font-bold text-amber-600">{criticalCount + highCount}</div>
+                <div className="text-2xl font-bold text-red-600">{criticalCount + highCount}</div>
               </div>
-              <div className="w-2 h-2 rounded-full bg-amber-500" />
+              <div className="w-2 h-2 rounded-full bg-red-500" />
             </div>
           </div>
           {/* Summary Stats */}
@@ -646,9 +468,9 @@ export default function EarlyWarning() {
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-white">
-                  <AlertTriangle size={20} className="text-gray-900" />
+                  <AlertTriangle size={20} className="text-red-600" />
                 </div>
-                <span className="text-xs font-medium text-gray-900 bg-amber-100 px-2 py-1 rounded-md">Critical</span>
+                <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded-md">Critical</span>
               </div>
               <div className="text-3xl font-bold text-gray-900">{criticalCount}</div>
               <div className="text-sm text-gray-600 mt-1">Critical Risk Cohorts</div>
@@ -658,9 +480,9 @@ export default function EarlyWarning() {
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="flex items-center justify-between mb-3">
                 <div className="p-2.5 rounded-xl bg-white">
-                  <TrendingUp size={20} className="text-gray-900" />
+                  <TrendingUp size={20} className="text-orange-600" />
                 </div>
-                <span className="text-xs font-medium text-gray-900 bg-orange-100 px-2 py-1 rounded-md">High Risk</span>
+                <span className="text-xs font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded-md">High Risk</span>
               </div>
               <div className="text-3xl font-bold text-gray-900">{highCount}</div>
               <div className="text-sm text-gray-600 mt-1">High Risk Cohorts</div>
@@ -669,7 +491,7 @@ export default function EarlyWarning() {
 
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
-                <Target size={20} className="text-gray-900" />
+                <Target size={20} className="text-purple-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900">94%</div>
               <div className="text-sm text-gray-600 mt-1">Pattern Match Accuracy</div>
@@ -678,7 +500,7 @@ export default function EarlyWarning() {
 
             <div className="bg-gray-100 rounded-2xl p-6 hover:shadow-sm transition-all">
               <div className="p-2.5 rounded-xl bg-white w-fit mb-3">
-                <Shield size={20} className="text-gray-900" />
+                <Shield size={20} className="text-green-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900">87%</div>
               <div className="text-sm text-gray-600 mt-1">Prevention Success Rate</div>
@@ -710,8 +532,6 @@ export default function EarlyWarning() {
               {selectedCohort && (
                 <>
                   <UrgencyCountdown days={selectedCohort.daysToAction} riskLevel={selectedCohort.riskLevel} />
-
-                  <RiskScoreBreakdown cohort={selectedCohort} />
 
                   <TrajectoryChart cohort={selectedCohort} />
 
