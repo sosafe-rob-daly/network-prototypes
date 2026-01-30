@@ -16,7 +16,7 @@ import {
   ChevronDown,
   Network
 } from 'lucide-react';
-import soSafeLogo from './assets/sosafe-logo.png';
+import companyLogo from '../Assets/Artifix.png';
 import personImage from '../Assets/Person.png';
 
 interface NavItem {
@@ -138,10 +138,10 @@ const Sidebar: React.FC = () => {
     <div className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col overflow-y-auto sticky top-0">
       {/* Logo and User Section */}
       <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center gap-3 mb-4">
-          <img src={soSafeLogo} alt="SoSafe" className="h-6" />
+        <div className="flex items-center justify-center mb-4">
+          <img src={companyLogo} alt="Artifix" className="h-12" />
         </div>
-        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+        <div className="flex items-center justify-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
           <img src={personImage} alt="Melissa Sands" className="w-10 h-10 rounded-full object-cover" />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-gray-900">Melissa Sands</div>
