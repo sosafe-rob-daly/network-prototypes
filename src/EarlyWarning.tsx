@@ -51,46 +51,13 @@ interface TrajectoryPoint {
 const cohorts: RiskCohort[] = [
   {
     id: 1,
-    name: 'Finance Team',
-    type: 'department',
-    size: 23,
-    currentHSI: 58,
-    trend: -12,
-    riskLevel: 'critical',
-    daysToAction: 3,
-    matchedPattern: {
-      name: 'Pre-BEC Attack Pattern',
-      occurrences: 47,
-      avgDaysBeforeIncident: 14,
-      incidentType: 'Business Email Compromise',
-    },
-    recommendation: {
-      action: 'Targeted BEC Simulation + Sofie Daily Nudges',
-      urgency: 'Deploy this week',
-      estimatedImpact: '+18% HSI in 2 weeks',
-    },
-    riskScore: {
-      composite: 78,
-      behavioral: 58,
-      patternMatch: 94,
-      impactFactor: 3.2,
-      trend: -12,
-      impactExplanation: {
-        accessDescription: 'Finance team has access to payment systems and bank accounts',
-        avgBreachCost: '$2.4M',
-        multiplier: '3.2x the organization average',
-      },
-    },
-  },
-  {
-    id: 2,
     name: 'Executive Leadership',
     type: 'role',
     size: 8,
     currentHSI: 64,
-    trend: -8,
-    riskLevel: 'high',
-    daysToAction: 7,
+    trend: 8,
+    riskLevel: 'critical',
+    daysToAction: 3,
     matchedPattern: {
       name: 'Credential Harvest Vulnerability',
       occurrences: 31,
@@ -99,19 +66,52 @@ const cohorts: RiskCohort[] = [
     },
     recommendation: {
       action: 'Executive Security Briefing + MFA Enforcement',
-      urgency: 'Deploy within 7 days',
+      urgency: 'Deploy this week',
       estimatedImpact: '+22% HSI in 3 weeks',
     },
     riskScore: {
-      composite: 71,
+      composite: 85,
       behavioral: 64,
-      patternMatch: 87,
+      patternMatch: 92,
       impactFactor: 4.8,
-      trend: -8,
+      trend: 8,
       impactExplanation: {
         accessDescription: 'Executive access to sensitive strategic data and approval workflows',
         avgBreachCost: '$3.6M',
         multiplier: '4.8x the organization average',
+      },
+    },
+  },
+  {
+    id: 2,
+    name: 'Finance Team',
+    type: 'department',
+    size: 23,
+    currentHSI: 82,
+    trend: -12,
+    riskLevel: 'low',
+    daysToAction: 30,
+    matchedPattern: {
+      name: 'Improving Security Posture',
+      occurrences: 156,
+      avgDaysBeforeIncident: 90,
+      incidentType: 'Low Risk',
+    },
+    recommendation: {
+      action: 'Continue Current Training Program',
+      urgency: 'Maintenance mode',
+      estimatedImpact: 'Maintain current HSI',
+    },
+    riskScore: {
+      composite: 24,
+      behavioral: 82,
+      patternMatch: 18,
+      impactFactor: 3.2,
+      trend: -12,
+      impactExplanation: {
+        accessDescription: 'Finance team has access to payment systems and bank accounts',
+        avgBreachCost: '$2.4M',
+        multiplier: '3.2x the organization average',
       },
     },
   },
@@ -239,10 +239,10 @@ const generateTrajectory = (cohortId: number): { actual: TrajectoryPoint[], pred
 
 const RiskBadge: React.FC<{ level: RiskLevel }> = ({ level }) => {
   const config = {
-    critical: { label: 'Critical Risk', color: 'text-gray-900 bg-amber-100 border-amber-200', icon: '⚠️' },
+    critical: { label: 'Critical Risk', color: 'text-gray-900 bg-red-100 border-red-200', icon: '⚠️' },
     high: { label: 'High Risk', color: 'text-gray-900 bg-orange-100 border-orange-200', icon: '●' },
     medium: { label: 'Medium Risk', color: 'text-gray-900 bg-yellow-100 border-yellow-200', icon: '●' },
-    low: { label: 'Low Risk', color: 'text-gray-900 bg-green-100 border-green-200', icon: '●' },
+    low: { label: 'Low Risk', color: 'text-gray-900 bg-green-100 border-green-200', icon: '✓' },
   };
 
   const { label, color, icon } = config[level];
@@ -272,23 +272,25 @@ const UrgencyCountdown: React.FC<{ days: number; riskLevel: RiskLevel }> = ({ da
 const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
   const { riskScore } = cohort;
 
-  const getScoreColor = (score: number) => {
-    if (score >= 70) return 'text-amber-600';
-    if (score >= 50) return 'text-orange-500';
-    return 'text-yellow-600';
-  };
-
   const getScoreBgColor = (score: number) => {
-    if (score >= 70) return 'bg-amber-500';
+    if (score >= 80) return 'bg-red-500';
     if (score >= 50) return 'bg-orange-400';
-    return 'bg-yellow-400';
+    if (score >= 30) return 'bg-yellow-400';
+    return 'bg-green-500';
   };
 
   const getScoreLabel = (score: number) => {
-    if (score >= 70) return 'Critical';
+    if (score >= 80) return 'Critical';
     if (score >= 50) return 'High';
     if (score >= 30) return 'Medium';
     return 'Low';
+  };
+
+  const getScoreBadgeColor = (score: number) => {
+    if (score >= 80) return 'bg-red-100 text-gray-900';
+    if (score >= 50) return 'bg-orange-100 text-gray-900';
+    if (score >= 30) return 'bg-yellow-100 text-gray-900';
+    return 'bg-green-100 text-gray-900';
   };
 
   return (
@@ -303,15 +305,12 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
       <div className="bg-gray-100 rounded-xl p-5 mb-5">
         <div className="flex items-center justify-between mb-3">
           <div className="text-sm font-medium text-gray-600">Composite Risk Score</div>
-          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-            riskScore.composite >= 70 ? 'bg-amber-100 text-gray-900' :
-            riskScore.composite >= 50 ? 'bg-orange-100 text-gray-900' : 'bg-yellow-100 text-gray-900'
-          }`}>
+          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${getScoreBadgeColor(riskScore.composite)}`}>
             {getScoreLabel(riskScore.composite)}
           </span>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className={`text-5xl font-black ${getScoreColor(riskScore.composite)}`}>{riskScore.composite}</span>
+          <span className="text-5xl font-black text-gray-900">{riskScore.composite}</span>
           <span className="text-xl text-gray-400">/100</span>
         </div>
         <div className="mt-3 h-3 bg-gray-200 rounded-full overflow-hidden">
@@ -352,10 +351,19 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="text-xs text-gray-500 mb-1">30-Day Trend</div>
           <div className="flex items-center gap-1">
-            <TrendingDown size={18} className="text-amber-600" />
-            <span className="text-2xl font-bold text-amber-600">{Math.abs(riskScore.trend)}%</span>
+            {riskScore.trend > 0 ? (
+              <>
+                <TrendingUp size={18} className="text-red-600" />
+                <span className="text-2xl font-bold text-red-600">+{riskScore.trend}%</span>
+              </>
+            ) : (
+              <>
+                <TrendingDown size={18} className="text-green-600" />
+                <span className="text-2xl font-bold text-green-600">{riskScore.trend}%</span>
+              </>
+            )}
           </div>
-          <div className="text-xs text-gray-500 mt-1">Declining performance</div>
+          <div className="text-xs text-gray-500 mt-1">{riskScore.trend > 0 ? 'Increasing risk' : 'Improving'}</div>
         </div>
       </div>
 
@@ -386,8 +394,9 @@ const RiskScoreBreakdown: React.FC<{ cohort: RiskCohort }> = ({ cohort }) => {
 };
 
 const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: boolean }> = ({ cohort, onClick, isActive }) => {
-  const trendColor = cohort.trend < -10 ? 'text-amber-600' : cohort.trend < -5 ? 'text-orange-500' : 'text-yellow-600';
-  const trendIcon = cohort.trend < 0 ? '↓' : '↑';
+  // Positive trend (going up) = bad (red), Negative trend (going down) = good (green)
+  const trendColor = cohort.trend > 0 ? 'text-red-600' : 'text-green-600';
+  const trendIcon = cohort.trend > 0 ? '↑' : '↓';
 
   return (
     <div
@@ -647,7 +656,7 @@ export default function EarlyWarning() {
                 <div className="p-2.5 rounded-xl bg-white">
                   <AlertTriangle size={20} className="text-gray-900" />
                 </div>
-                <span className="text-xs font-medium text-gray-900 bg-amber-100 px-2 py-1 rounded-md">Critical</span>
+                <span className="text-xs font-medium text-gray-900 bg-red-100 px-2 py-1 rounded-md">Critical</span>
               </div>
               <div className="text-3xl font-bold text-gray-900">{criticalCount}</div>
               <div className="text-sm text-gray-600 mt-1">Critical Risk Cohorts</div>
