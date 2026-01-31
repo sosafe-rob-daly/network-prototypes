@@ -420,7 +420,7 @@ const CohortCard: React.FC<{ cohort: RiskCohort; onClick: () => void; isActive: 
       className={`rounded-2xl p-5 cursor-pointer transition-all ${
         isActive
           ? 'bg-gradient-to-br from-blue-50 to-gray-100 border-2 border-blue-200'
-          : 'bg-gray-100 hover:bg-gray-150'
+          : 'bg-gray-100 hover:bg-gray-150 border border-gray-200'
       }`}
     >
       <div className="mb-4">
