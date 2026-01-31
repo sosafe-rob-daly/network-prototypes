@@ -144,8 +144,8 @@ const InterventionCard: React.FC<{ intervention: Intervention; isTop?: boolean }
   const CategoryIcon = categoryIcons[intervention.category];
 
   return (
-    <div className={`bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-sm transition-all ${
-      isTop ? 'bg-gradient-to-br from-blue-50 to-gray-100 border-blue-200' : ''
+    <div className={`bg-white rounded-2xl p-6 hover:shadow-sm transition-all ${
+      isTop ? 'bg-gradient-to-br from-blue-50 to-gray-100 border-2 border-blue-200' : 'border border-gray-200'
     }`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-3 flex-1">
