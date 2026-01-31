@@ -797,7 +797,7 @@ const TemplateIntelligencePanel: React.FC = () => {
         {simulationTemplates.map((template) => (
           <div
             key={template.id}
-            className="bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-gray-200 transition-all"
+            className="bg-gray-50 rounded-xl p-4 border border-gray-200 hover:border-gray-300 transition-all"
           >
             <div className="flex items-start gap-3 mb-3">
               {/* Template preview thumbnail */}
