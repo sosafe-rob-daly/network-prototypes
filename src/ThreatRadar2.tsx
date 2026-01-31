@@ -855,13 +855,14 @@ const TemplateIntelligencePanel: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+      <div className="mt-4 pt-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-gray-600">
           <Shield size={14} />
           <span><span className="font-bold text-gray-900">{networkPoweredCount}</span> templates derived from real network threats</span>
         </div>
-        <button className="text-xs font-bold text-gray-900 hover:underline">
-          View template library →
+        <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
+          View template library
+          <ArrowRight size={16} />
         </button>
       </div>
     </div>
