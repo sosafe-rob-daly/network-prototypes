@@ -919,13 +919,13 @@ export default function ThreatRadar2() {
           {/* February Report Banner */}
           <div className="bg-gradient-to-br from-purple-100 via-pink-50 to-purple-50 rounded-2xl p-6 border border-purple-100 flex items-center justify-between">
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">February report is ready!</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Annual threat intelligence report is ready!</h3>
               <button className="mt-4 bg-gray-900 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-gray-800 transition-colors">
                 Download
               </button>
             </div>
             <div className="w-32 h-32 ml-4">
-              <img src={reportImage} alt="February report" className="w-full h-full object-contain rounded-xl" />
+              <img src={reportImage} alt="Annual threat intelligence report" className="w-full h-full object-contain rounded-xl" />
             </div>
           </div>
         </div>
