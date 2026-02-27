@@ -10,6 +10,11 @@ import Sidebar from './Sidebar';
 import docusignLogo from '../Assets/Docusign.png';
 import m365Logo from '../Assets/M365.png';
 import paypalLogo from '../Assets/PayPal.png';
+import whatsappLogo from '../Assets/WhatsApp.png';
+import zoomLogo from '../Assets/Zoom.png';
+import linkedinLogo from '../Assets/LinkedIn.webp';
+import dhlLogo from '../Assets/DHL.png';
+import deutschePostLogo from '../Assets/DeutschePost.png';
 
 // === Type Definitions ===
 type AttackChannel = 'email' | 'whatsapp' | 'vishing' | 'sms' | 'qr-code' | 'multi-channel';
@@ -167,7 +172,7 @@ const allTemplates: MarketplaceTemplate[] = [
     difficulty: 5,
     tags: ['ceo-fraud', 'social-engineering', 'messaging'],
     language: 'English',
-    previewColor: 'from-green-500 to-emerald-600',
+    previewImageUrl: whatsappLogo,
     effectiveness: {
       avgClickRate: 31.2, avgReportingRate: 28.4,
       clickRateOverTime: [38, 36, 35, 33, 32, 31, 31, 30, 31, 31, 32, 31],
@@ -226,7 +231,7 @@ const allTemplates: MarketplaceTemplate[] = [
     difficulty: 2,
     tags: ['smishing', 'delivery', 'brand-impersonation'],
     language: 'German',
-    previewColor: 'from-yellow-500 to-amber-400',
+    previewImageUrl: deutschePostLogo,
     effectiveness: {
       avgClickRate: 14.8, avgReportingRate: 45.2,
       clickRateOverTime: [20, 19, 18, 17, 16, 15, 15, 14, 15, 14, 15, 14],
@@ -315,7 +320,7 @@ const allTemplates: MarketplaceTemplate[] = [
     difficulty: 3,
     tags: ['spear-phishing', 'linkedin', 'recruitment'],
     language: 'English',
-    previewColor: 'from-blue-600 to-blue-800',
+    previewImageUrl: linkedinLogo,
     effectiveness: {
       avgClickRate: 21.3, avgReportingRate: 33.8,
       clickRateOverTime: [28, 26, 25, 24, 23, 22, 22, 21, 21, 21, 21, 21],
@@ -374,7 +379,7 @@ const allTemplates: MarketplaceTemplate[] = [
     difficulty: 2,
     tags: ['credential-harvest', 'zoom', 'remote-work'],
     language: 'English',
-    previewColor: 'from-blue-500 to-indigo-600',
+    previewImageUrl: zoomLogo,
     effectiveness: {
       avgClickRate: 16.4, avgReportingRate: 44.7,
       clickRateOverTime: [22, 20, 19, 18, 17, 17, 16, 16, 16, 16, 16, 16],
@@ -403,7 +408,7 @@ const allTemplates: MarketplaceTemplate[] = [
     difficulty: 2,
     tags: ['smishing', 'delivery', 'dhl'],
     language: 'German',
-    previewColor: 'from-yellow-400 to-red-500',
+    previewImageUrl: dhlLogo,
     effectiveness: {
       avgClickRate: 13.7, avgReportingRate: 48.9,
       clickRateOverTime: [19, 17, 16, 15, 15, 14, 14, 13, 13, 14, 13, 13],
