@@ -64,6 +64,7 @@ const Sidebar: React.FC = () => {
       icon: Network,
       children: [
         { label: 'Threat Radar', path: 'threat-radar' },
+        { label: 'Template Marketplace', path: 'template-marketplace' },
         { label: 'Interventions', path: 'interventions' },
         { label: 'Early Warning', path: 'early-warning' },
       ]

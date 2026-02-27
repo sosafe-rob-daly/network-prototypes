@@ -6,6 +6,7 @@ import EarlyWarning from './EarlyWarning'
 import SofieDashboard from './SofieDashboard'
 import InterventionsOld from './InterventionsOld'
 import EarlyWarningOld from './EarlyWarningOld'
+import TemplateMarketplace from './TemplateMarketplace'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/threat-radar-2" element={<ThreatRadar />} />
         <Route path="/interventions" element={<Interventions />} />
         <Route path="/early-warning" element={<EarlyWarning />} />
+        <Route path="/template-marketplace" element={<TemplateMarketplace />} />
         <Route path="/sofie-dashboard" element={<SofieDashboard />} />
         <Route path="/interventions-old" element={<InterventionsOld />} />
         <Route path="/early-warning-old" element={<EarlyWarningOld />} />

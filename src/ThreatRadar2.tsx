@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Mail, Clock, Shield, FileText, TrendingUp, Sparkles, Users } from 'lucide-react';
 import ReactECharts from 'echarts-for-react';
 import Sidebar from './Sidebar';
@@ -768,6 +769,7 @@ const ReportedThreatFeed: React.FC = () => {
 
 // Template Intelligence Panel Component
 const TemplateIntelligencePanel: React.FC = () => {
+  const navigate = useNavigate();
   const networkPoweredCount = simulationTemplates.filter(t => t.isNetworkPowered).length;
   const newThisWeek = simulationTemplates.filter(t => t.status === 'new' || t.status === 'updated').length;
 
@@ -860,8 +862,8 @@ const TemplateIntelligencePanel: React.FC = () => {
           <Shield size={14} />
           <span><span className="font-bold text-gray-900">{networkPoweredCount}</span> templates derived from real network threats</span>
         </div>
-        <button className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
-          View template library
+        <button onClick={() => navigate('/template-marketplace')} className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-800 transition-colors">
+          View template marketplace
           <ArrowRight size={16} />
         </button>
       </div>
