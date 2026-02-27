@@ -14,7 +14,8 @@ import {
   User,
   Settings,
   ChevronDown,
-  Network
+  Network,
+  Store
 } from 'lucide-react';
 import companyLogo from '../Assets/Artifix.png';
 import personImage from '../Assets/Person.png';
@@ -22,6 +23,7 @@ import personImage from '../Assets/Person.png';
 interface NavItem {
   label: string;
   icon: React.ElementType;
+  path?: string;
   children?: { label: string; path?: string }[];
   expanded?: boolean;
 }
@@ -51,6 +53,7 @@ const Sidebar: React.FC = () => {
     { label: 'Phishing', icon: Fish, children: [] },
     { label: 'E-learning', icon: GraduationCap, children: [] },
     { label: 'Phishing Report Button', icon: AlertCircle, children: [] },
+    { label: 'Marketplace', icon: Store, path: 'template-marketplace' },
   ];
 
   const communicationItems: NavItem[] = [
@@ -64,7 +67,6 @@ const Sidebar: React.FC = () => {
       icon: Network,
       children: [
         { label: 'Threat Radar', path: 'threat-radar' },
-        { label: 'Template Marketplace', path: 'template-marketplace' },
         { label: 'Interventions', path: 'interventions' },
         { label: 'Early Warning', path: 'early-warning' },
       ]
@@ -87,14 +89,24 @@ const Sidebar: React.FC = () => {
     const Icon = item.icon;
     const isExpandable = item.children && item.children.length >= 0;
     const isExpanded = expandedSections[item.label];
+    const isDirectLink = !!item.path;
+    const isActive = item.path === activePage;
 
     return (
       <div>
         <button
-          onClick={() => isExpandable && toggleSection(item.label)}
-          className={`w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors ${
-            isExpandable ? 'cursor-pointer' : ''
-          }`}
+          onClick={() => {
+            if (isDirectLink) {
+              navigate(`/${item.path}`);
+            } else if (isExpandable) {
+              toggleSection(item.label);
+            }
+          }}
+          className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
+            isActive
+              ? 'text-slate-900 bg-slate-100 font-bold'
+              : 'text-gray-700 hover:bg-gray-100'
+          } ${isExpandable || isDirectLink ? 'cursor-pointer' : ''}`}
         >
           <div className="flex items-center gap-3">
             <Icon size={18} className="text-gray-600" />

@@ -980,7 +980,7 @@ export default function TemplateMarketplace() {
           {/* Header */}
           <div className="mb-8 flex items-start justify-between">
             <div>
-              <h1 className="text-5xl font-black text-gray-900">Template Marketplace</h1>
+              <h1 className="text-5xl font-black text-gray-900">Marketplace</h1>
               <p className="text-xs text-gray-900 mt-2">Simulation templates powered by the SoSafe network · Curated by experts and validated by {totalOrgs.toLocaleString()}+ organizations</p>
             </div>
             <div className="flex items-center gap-3">
