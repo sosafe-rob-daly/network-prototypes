@@ -538,8 +538,8 @@ const TemplateCard: React.FC<{
     >
       <div className="flex items-start gap-3 mb-3">
         {template.previewImageUrl ? (
-          <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
-            <img src={template.previewImageUrl} alt={template.name} className="w-10 h-10 object-contain" />
+          <div className="w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden">
+            <img src={template.previewImageUrl} alt={template.name} className="w-full h-full object-cover" />
           </div>
         ) : (
           <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${template.previewColor} flex items-center justify-center flex-shrink-0`}>
@@ -621,8 +621,8 @@ const TemplateCardCompact: React.FC<{
     >
       <div className="flex items-center gap-3">
         {template.previewImageUrl ? (
-          <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
-            <img src={template.previewImageUrl} alt={template.name} className="w-8 h-8 object-contain" />
+          <div className="w-10 h-10 rounded-lg flex-shrink-0 overflow-hidden">
+            <img src={template.previewImageUrl} alt={template.name} className="w-full h-full object-cover" />
           </div>
         ) : (
           <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${template.previewColor} flex items-center justify-center flex-shrink-0`}>
@@ -723,8 +723,8 @@ const TemplateDetailPanel: React.FC<{
           </button>
           <div className="flex items-start gap-4 flex-1">
             {template.previewImageUrl ? (
-              <div className="w-16 h-16 rounded-xl bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                <img src={template.previewImageUrl} alt={template.name} className="w-12 h-12 object-contain" />
+              <div className="w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden">
+                <img src={template.previewImageUrl} alt={template.name} className="w-full h-full object-cover" />
               </div>
             ) : (
               <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${template.previewColor} flex items-center justify-center flex-shrink-0`}>
